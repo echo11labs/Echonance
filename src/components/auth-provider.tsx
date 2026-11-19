@@ -1,16 +1,10 @@
 "use client";
 
-import { Suspense, type ReactNode } from "react";
 import { ClerkProvider, Show, SignInButton, UserButton } from "@clerk/nextjs";
+import { type ReactNode, Suspense } from "react";
+import { isClerkConfigured } from "@/lib/clerk-config";
 
-export function isClerkConfigured(): boolean {
-  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-  return Boolean(
-    publishableKey &&
-    publishableKey !== "pk_test_..." &&
-    !publishableKey.endsWith("..."),
-  );
-}
+export { isClerkConfigured };
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const configured = isClerkConfigured();

@@ -1,5 +1,6 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import { isClerkServerConfigured } from "@/lib/clerk-config";
 
 /**
  * Reviewer access is deny-by-default. A signed-in Clerk user is treated as a
@@ -16,6 +17,13 @@ function getReviewerAllowlist(): Set<string> {
 }
 
 export async function requireReviewer(): Promise<NextResponse | null> {
+  if (!isClerkServerConfigured()) {
+    return NextResponse.json(
+      { status: "error", message: "Sign in to access the review queue." },
+      { status: 401 },
+    );
+  }
+
   const user = await currentUser().catch(() => null);
   if (!user) {
     return NextResponse.json(
