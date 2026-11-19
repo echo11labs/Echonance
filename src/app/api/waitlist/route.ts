@@ -1,5 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { buildWaitlistWelcomeEmail, sendResendEmail } from "@/lib/email";
+import {
+  buildWaitlistWelcomeEmail,
+  escapeHtml,
+  sendResendEmail,
+} from "@/lib/email";
 import { generateId } from "@/lib/utils";
 
 export interface WaitlistSubmissionRecord {
@@ -105,7 +109,8 @@ export async function POST(req: NextRequest) {
       waitlistStore.unshift(record);
     }
 
-    const notifyTo = process.env.WAITLIST_NOTIFY_EMAIL || "taxora8@gmail.com";
+    const notifyTo =
+      process.env.WAITLIST_NOTIFY_EMAIL?.trim() || "taxora8@gmail.com";
     const welcome = buildWaitlistWelcomeEmail(record);
 
     await Promise.all([
@@ -119,11 +124,11 @@ export async function POST(req: NextRequest) {
         subject: `Taxora Legal-1 Waitlist: ${record.fullName} (${record.ticketId})`,
         html: `<p><strong>New Taxora Legal-1 Waitlist Signup</strong></p>
           <ul>
-            <li><strong>Name:</strong> ${record.fullName}</li>
-            <li><strong>Email:</strong> ${record.email}</li>
-            <li><strong>Role:</strong> ${record.role}</li>
-            <li><strong>Ticket:</strong> ${record.ticketId}</li>
-            <li><strong>Source:</strong> ${record.source}</li>
+            <li><strong>Name:</strong> ${escapeHtml(record.fullName)}</li>
+            <li><strong>Email:</strong> ${escapeHtml(record.email)}</li>
+            <li><strong>Role:</strong> ${escapeHtml(record.role)}</li>
+            <li><strong>Ticket:</strong> ${escapeHtml(record.ticketId)}</li>
+            <li><strong>Source:</strong> ${escapeHtml(record.source)}</li>
           </ul>`,
       }),
     ]);

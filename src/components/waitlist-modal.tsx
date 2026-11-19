@@ -77,6 +77,7 @@ function saveStoredWaitlistPass(pass: StoredWaitlistPass): void {
 export interface WaitlistModalProps {
   open: boolean;
   reason?: "limit_reached" | "direct";
+  initialPassCode?: string | null;
   onClose: () => void;
   onPassUpdated?: (pass: StoredWaitlistPass) => void;
 }
@@ -459,6 +460,7 @@ function ArchitecturalBarcode() {
 export function WaitlistModal({
   open,
   reason = "direct",
+  initialPassCode = null,
   onClose,
   onPassUpdated,
 }: WaitlistModalProps) {
@@ -467,6 +469,7 @@ export function WaitlistModal({
   const [email, setEmail] = useState("");
   const [authEmail, setAuthEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
@@ -474,6 +477,7 @@ export function WaitlistModal({
     const existing = loadStoredWaitlistPass();
     setSavedPass(existing);
     setIsEditingPass(false);
+    setCopiedCode(false);
     setErrorMsg("");
     if (existing?.email) {
       setEmail(existing.email);
@@ -551,8 +555,20 @@ export function WaitlistModal({
     }
   }
 
-  const showConfirmedPass = Boolean(savedPass && !isEditingPass);
+  const activeTicketId = savedPass?.ticketId ?? initialPassCode ?? null;
+  const showConfirmedPass = Boolean(activeTicketId && !isEditingPass);
   const clerkEnabled = isClerkConfigured();
+
+  function handleCopyTicket(code: string) {
+    if (typeof navigator === "undefined" || !navigator.clipboard) return;
+    navigator.clipboard
+      .writeText(code)
+      .then(() => {
+        setCopiedCode(true);
+        window.setTimeout(() => setCopiedCode(false), 2000);
+      })
+      .catch(() => {});
+  }
 
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: Modal backdrop dismissal on outside click
@@ -629,20 +645,35 @@ export function WaitlistModal({
                   : "Harness our own well-trained Nepal tax foundation model built on Finance Acts, IRD circulars, and ICAN audits to drive exact statutory decisions."}
               </p>
 
-              {showConfirmedPass && savedPass ? (
+              {showConfirmedPass && activeTicketId ? (
                 <div className={styles.confirmedBox}>
                   <div className={styles.confirmedTop}>
                     <span className={styles.confirmedBadge}>
                       <Check size={14} aria-hidden="true" />
                       <span>Early Access Reserved</span>
                     </span>
-                    <span className={styles.ticketCode}>
-                      {savedPass.ticketId}
-                    </span>
+                    <div className={styles.ticketActionsGroup}>
+                      <span className={styles.ticketCode}>
+                        {activeTicketId}
+                      </span>
+                      <button
+                        type="button"
+                        className={styles.copyCodeBtn}
+                        onClick={() => handleCopyTicket(activeTicketId)}
+                      >
+                        {copiedCode ? "Copied" : "Copy"}
+                      </button>
+                    </div>
                   </div>
                   <p className={styles.confirmedEmail}>
-                    Priority invite registered for{" "}
-                    <strong>{savedPass.email}</strong>.
+                    {savedPass?.email ? (
+                      <>
+                        Priority invite registered for{" "}
+                        <strong>{savedPass.email}</strong>.
+                      </>
+                    ) : (
+                      "Your waitlist pass is ready to copy or update below."
+                    )}
                   </p>
                   <div className={styles.confirmedActions}>
                     <button
@@ -650,7 +681,9 @@ export function WaitlistModal({
                       className={styles.changeEmailBtn}
                       onClick={() => setIsEditingPass(true)}
                     >
-                      Change email
+                      {savedPass?.email
+                        ? "Change email"
+                        : "Use a different email"}
                     </button>
                     <button
                       type="button"

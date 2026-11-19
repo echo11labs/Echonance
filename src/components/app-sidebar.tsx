@@ -124,6 +124,7 @@ export interface AppSidebarProps {
   onRenameSession?: (sessionId: string, newTitle: string) => void;
   waitlistOpen?: boolean;
   waitlistReason?: "limit_reached" | "direct";
+  waitlistPassCode?: string | null;
   onOpenWaitlist?: (reason?: "limit_reached" | "direct") => void;
   onCloseWaitlist?: () => void;
   guestLimitOpen?: boolean;
@@ -145,6 +146,7 @@ export function AppSidebar({
   onRenameSession,
   waitlistOpen,
   waitlistReason,
+  waitlistPassCode,
   onOpenWaitlist,
   onCloseWaitlist,
   guestLimitOpen,
@@ -805,6 +807,7 @@ export function AppSidebar({
       <WaitlistModal
         open={isWaitlistModalOpen}
         reason={activeWaitlistReason}
+        initialPassCode={waitlistPassCode}
         onClose={triggerCloseWaitlist}
         onPassUpdated={() => setHasJoinedWaitlist(true)}
       />

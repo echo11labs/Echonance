@@ -15,130 +15,6 @@ export interface WaitlistEmailData {
   useCases: string[];
 }
 
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
-export function buildWaitlistWelcomeEmail(data: WaitlistEmailData): {
-  subject: string;
-  html: string;
-} {
-  const name = escapeHtml(data.fullName);
-  const ticket = escapeHtml(data.ticketId);
-  const cohort = escapeHtml(data.cohort);
-  const role = escapeHtml(data.role);
-  const org = data.organization ? escapeHtml(data.organization) : "";
-  const useCasesHtml = data.useCases
-    .slice(0, 4)
-    .map(
-      (item) =>
-        `<li style="margin:0 0 6px;color:#c7d3cd;font-size:14px;line-height:1.5;">${escapeHtml(item)}</li>`,
-    )
-    .join("");
-
-  const subject = `You're on the Taxora Legal-1 Waitlist · ${data.ticketId}`;
-  const html = `<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>${subject}</title>
-  </head>
-  <body style="margin:0;padding:0;background-color:#060807;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#f4f5f4;">
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#060807;padding:36px 16px;">
-      <tr>
-        <td align="center">
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;background-color:#0d1210;border:1px solid #1f2b25;border-radius:16px;overflow:hidden;">
-            <tr>
-              <td style="padding:28px 32px 20px;border-bottom:1px solid #19241e;background:linear-gradient(135deg,#0d1511 0%,#0b100e 100%);">
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-                  <tr>
-                    <td>
-                      <span style="font-size:15px;font-weight:700;letter-spacing:0.22em;color:#f4f5f4;">TAXORA</span>
-                    </td>
-                    <td align="right">
-                      <span style="display:inline-block;padding:3px 10px;border-radius:999px;background-color:rgba(0,223,129,0.12);border:1px solid rgba(0,223,129,0.35);color:#6ee7b7;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;">BETA ACCESS</span>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-
-            <tr>
-              <td style="padding:32px;">
-                <p style="margin:0 0 10px;font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#00df81;">
-                  Waitlist Confirmed
-                </p>
-                <h1 style="margin:0 0 16px;font-size:24px;line-height:1.3;font-weight:600;color:#f4f5f4;">
-                  Thank you for joining, ${name}.
-                </h1>
-                <p style="margin:0 0 24px;font-size:15px;line-height:1.65;color:#b8c4be;">
-                  Your spot for <strong style="color:#f4f5f4;">Taxora Legal-1</strong>—Nepal’s statutory tax intelligence workspace—is reserved. We’re onboarding practitioners in waves and will notify you as soon as your access unlocks.
-                </p>
-
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 24px;background-color:#080c0a;border:1px solid #1f3328;border-radius:12px;">
-                  <tr>
-                    <td style="padding:18px 20px;">
-                      <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-                        <tr>
-                          <td style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7d8d85;">
-                            Priority Pass
-                          </td>
-                          <td align="right" style="font-size:11px;color:#6ee7b7;font-weight:600;">
-                            ${cohort}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td colspan="2" style="padding-top:8px;font-size:20px;font-weight:700;letter-spacing:0.08em;color:#00df81;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;">
-                            ${ticket}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td colspan="2" style="padding-top:10px;font-size:13px;color:#9aa7a0;">
-                            Role: <strong style="color:#e1e8e4;">${role}</strong>${org ? ` · ${org}` : ""}
-                          </td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-                </table>
-
-                <p style="margin:0 0 10px;font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#8ea097;">
-                  Reserved Access Highlights
-                </p>
-                <ul style="margin:0 0 24px;padding-left:18px;">
-                  ${useCasesHtml}
-                </ul>
-
-                <p style="margin:0;font-size:13px;line-height:1.6;color:#8a9790;">
-                  In the meantime, you can explore Nepal’s primary Acts, IRD circulars, and Finance Bill updates inside the Taxora Tax Law Library.
-                </p>
-              </td>
-            </tr>
-
-            <tr>
-              <td style="padding:20px 32px;border-top:1px solid #19241e;background-color:#090d0b;">
-                <p style="margin:0;font-size:12px;line-height:1.5;color:#6f7d76;">
-                  Taxora · Nepal Tax Intelligence<br />
-                  Automated confirmation for ${escapeHtml(data.email)}
-                </p>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-  </body>
-</html>`;
-
-  return { subject, html };
-}
-
 export interface ContributorThankYouEmailData {
   contributorName: string;
   contributorEmail: string;
@@ -151,96 +27,121 @@ export interface ContributorThankYouEmailData {
   fiscalYear: string;
 }
 
-export function buildContributorThankYouEmail(
-  data: ContributorThankYouEmailData,
-): {
+const DEFAULT_SITE_ORIGIN = "https://taxora.echo11.tech";
+
+function resolveSiteOrigin(): string {
+  const raw =
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+    process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  if (!raw) return DEFAULT_SITE_ORIGIN;
+  const withScheme = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+  try {
+    return new URL(withScheme).origin;
+  } catch {
+    return DEFAULT_SITE_ORIGIN;
+  }
+}
+
+export function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+interface EmailShellOptions {
   subject: string;
-  html: string;
-} {
-  const name = escapeHtml(data.contributorName || "Contributor");
-  const title = escapeHtml(data.topicOrTitle);
-  const question = data.question ? escapeHtml(data.question) : "";
-  const category = escapeHtml(data.category);
-  const fiscalYear = escapeHtml(data.fiscalYear);
-  const ican = data.icanNumber ? escapeHtml(data.icanNumber) : "";
-  const firm = data.firmName ? escapeHtml(data.firmName) : "";
-  const typeLabel =
-    data.submissionType === "qa" ? "Tax Q&A Submission" : "Statutory Document";
+  heroTag: string;
+  headline: string;
+  introHtml: string;
+  highlightHtml: string;
+  ctaLabel: string;
+  ctaHref: string;
+  footerNoteHtml: string;
+}
 
-  const attributionParts = [name];
-  if (ican) attributionParts.push(`ICAN ${ican}`);
-  if (firm) attributionParts.push(firm);
-  const attributionLine = attributionParts.join(" · ");
+function renderTaxoraEmailShell({
+  subject,
+  heroTag,
+  headline,
+  introHtml,
+  highlightHtml,
+  ctaLabel,
+  ctaHref,
+  footerNoteHtml,
+}: EmailShellOptions): string {
+  const origin = resolveSiteOrigin();
+  const displayDomain = origin.replace(/^https?:\/\//, "");
+  const logoUrl = `${origin}/taxora-logo.png`;
 
-  const subject = `Thank you for contributing to Taxora · ${data.topicOrTitle}`;
-  const html = `<!doctype html>
+  return `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light" />
     <title>${escapeHtml(subject)}</title>
   </head>
-  <body style="margin:0;padding:0;background-color:#060807;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#f4f5f4;">
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#060807;padding:36px 16px;">
+  <body style="margin:0;padding:0;background-color:#f3f6f4;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#0c1410;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#f3f6f4;padding:36px 16px;">
       <tr>
         <td align="center">
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;background-color:#0d1210;border:1px solid #1f2b25;border-radius:16px;overflow:hidden;">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:520px;background-color:#ffffff;border:1px solid #e3ebe6;border-radius:12px;overflow:hidden;box-shadow:0 8px 28px rgba(6,8,7,0.06);">
             <tr>
-              <td style="padding:28px 32px 20px;border-bottom:1px solid #19241e;background:linear-gradient(135deg,#0d1511 0%,#0b100e 100%);">
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+              <td align="center" style="padding:42px 28px 38px;background-color:#060807;background-image:linear-gradient(158deg,#050807 0%,#07140e 56%,#093d27 84%,#00df81 100%);border-bottom:3px solid #00df81;">
+                <table role="presentation" cellspacing="0" cellpadding="0" style="margin:0 auto 14px;">
                   <tr>
-                    <td>
-                      <span style="font-size:15px;font-weight:700;letter-spacing:0.22em;color:#f4f5f4;">TAXORA</span>
-                    </td>
-                    <td align="right">
-                      <span style="display:inline-block;padding:3px 10px;border-radius:999px;background-color:rgba(0,223,129,0.12);border:1px solid rgba(0,223,129,0.35);color:#6ee7b7;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">CA KNOWLEDGE HUB</span>
+                    <td align="center" style="width:48px;height:48px;border-radius:12px;background-color:#0b1510;border:1px solid rgba(0,223,129,0.42);padding:8px;">
+                      <img src="${escapeHtml(logoUrl)}" width="32" height="32" alt="Taxora" style="display:block;width:32px;height:32px;border:0;outline:none;text-decoration:none;border-radius:6px;" />
                     </td>
                   </tr>
                 </table>
+                <div style="font-size:29px;line-height:1.15;font-weight:700;letter-spacing:-0.025em;color:#ffffff;">
+                  Taxora<sup style="font-size:12px;font-weight:600;color:#00df81;letter-spacing:0.04em;margin-left:3px;vertical-align:super;">${escapeHtml(heroTag)}</sup>
+                </div>
               </td>
             </tr>
 
             <tr>
-              <td style="padding:32px;">
-                <p style="margin:0 0 10px;font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#00df81;">
-                  ${typeLabel} Received
-                </p>
-                <h1 style="margin:0 0 16px;font-size:23px;line-height:1.3;font-weight:600;color:#f4f5f4;">
-                  Thank you for your contribution, ${name}.
+              <td align="center" style="padding:38px 34px 36px;background-color:#ffffff;">
+                <h1 style="margin:0 0 12px;font-size:21px;line-height:1.3;font-weight:700;letter-spacing:-0.02em;color:#0c1410;">
+                  ${headline}
                 </h1>
-                <p style="margin:0 0 22px;font-size:15px;line-height:1.65;color:#b8c4be;">
-                  We have received your submission for the Taxora Knowledge Hub. Our editorial team will <strong style="color:#f4f5f4;">verify</strong> the statutory citations and <strong style="color:#f4f5f4;">recite &amp; credit</strong> this entry with your contributor information once published.
+                <p style="margin:0 auto 24px;max-width:390px;font-size:14.5px;line-height:1.6;color:#5a6962;">
+                  ${introHtml}
                 </p>
 
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 22px;background-color:#080c0a;border:1px solid #1f3328;border-radius:12px;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:340px;margin:0 auto 24px;background-color:#f4faf7;border:1px solid #d5ece0;border-radius:6px;">
                   <tr>
-                    <td style="padding:18px 20px;">
-                      <p style="margin:0 0 6px;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7d8d85;">
-                        ${category} · FY ${fiscalYear}
-                      </p>
-                      <p style="margin:0;font-size:17px;line-height:1.4;font-weight:600;color:#f4f5f4;">
-                        ${title}
-                      </p>
-                      ${
-                        question
-                          ? `<p style="margin:12px 0 0;padding-top:12px;border-top:1px solid #19241e;font-size:13.5px;line-height:1.55;color:#c7d3cd;"><strong style="color:#8ee1b8;">Question:</strong> ${question}</p>`
-                          : ""
-                      }
+                    <td align="center" style="padding:10px 14px;font-size:12.5px;line-height:1.5;color:#1b382b;">
+                      ${highlightHtml}
                     </td>
                   </tr>
                 </table>
 
-                <p style="margin:0;font-size:13px;line-height:1.6;color:#9aa7a0;">
-                  <strong style="color:#e1e8e4;">Attribution on file:</strong> ${attributionLine}
-                </p>
-              </td>
-            </tr>
+                <table role="presentation" cellspacing="0" cellpadding="0" style="margin:0 auto;">
+                  <tr>
+                    <td align="center" style="border-radius:7px;background-color:#00df81;background-image:linear-gradient(180deg,#00e888 0%,#00c471 100%);box-shadow:0 3px 12px rgba(0,223,129,0.28);">
+                      <a href="${escapeHtml(ctaHref)}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:13px 38px;font-size:14.5px;font-weight:700;line-height:1;letter-spacing:-0.01em;color:#04150d;text-decoration:none;border-radius:7px;">
+                        ${escapeHtml(ctaLabel)}
+                      </a>
+                    </td>
+                  </tr>
+                </table>
 
-            <tr>
-              <td style="padding:20px 32px;border-top:1px solid #19241e;background-color:#090d0b;">
-                <p style="margin:0;font-size:12px;line-height:1.5;color:#6f7d76;">
-                  Taxora · Nepal Tax Intelligence<br />
-                  Sent to ${escapeHtml(data.contributorEmail)}
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:32px 0 24px;">
+                  <tr>
+                    <td style="border-top:1px dashed #dde5e0;font-size:1px;line-height:1px;">&nbsp;</td>
+                  </tr>
+                </table>
+
+                <p style="margin:0 0 18px;font-size:12.5px;line-height:1.55;color:#6c7a73;">
+                  ${footerNoteHtml}
+                </p>
+                <p style="margin:0;font-size:13px;line-height:1.4;">
+                  <a href="${escapeHtml(origin)}" target="_blank" rel="noopener noreferrer" style="color:#5a6962;text-decoration:underline;">${escapeHtml(displayDomain)}</a>
                 </p>
               </td>
             </tr>
@@ -250,6 +151,68 @@ export function buildContributorThankYouEmail(
     </table>
   </body>
 </html>`;
+}
+
+export function buildWaitlistWelcomeEmail(data: WaitlistEmailData): {
+  subject: string;
+  html: string;
+} {
+  const origin = resolveSiteOrigin();
+  const name = escapeHtml(data.fullName);
+  const ticket = escapeHtml(data.ticketId);
+  const cohort = escapeHtml(data.cohort);
+  const email = escapeHtml(data.email);
+
+  const subject = `You're on the Taxora Legal-1 Waitlist · ${data.ticketId}`;
+  const html = renderTaxoraEmailShell({
+    subject,
+    heroTag: "Legal-1",
+    headline: "You’re on the waitlist",
+    introHtml: `Thank you for joining, <strong style="color:#0c1410;">${name}</strong>. Your early access pass for <strong style="color:#0c1410;">Taxora Legal-1</strong> — Nepal’s statutory tax intelligence workspace — is reserved.`,
+    highlightHtml: `<span style="color:#5a6962;">Priority Pass:</span> <strong style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#057a49;letter-spacing:0.05em;">${ticket}</strong><br /><span style="font-size:11.5px;color:#5a6962;">${cohort}</span>`,
+    ctaLabel: "Explore Taxora",
+    ctaHref: origin,
+    footerNoteHtml: `Automated waitlist confirmation for <strong style="color:#45534c;">${email}</strong>.<br />Browse primary Nepal Acts &amp; IRD circulars anytime in our library.`,
+  });
+
+  return { subject, html };
+}
+
+export function buildContributorThankYouEmail(
+  data: ContributorThankYouEmailData,
+): {
+  subject: string;
+  html: string;
+} {
+  const origin = resolveSiteOrigin();
+  const name = escapeHtml(data.contributorName || "Contributor");
+  const title = escapeHtml(data.topicOrTitle);
+  const category = escapeHtml(data.category);
+  const fiscalYear = escapeHtml(data.fiscalYear);
+  const ican = data.icanNumber ? escapeHtml(data.icanNumber) : "";
+  const firm = data.firmName ? escapeHtml(data.firmName) : "";
+  const email = escapeHtml(data.contributorEmail);
+  const typeLabel =
+    data.submissionType === "qa"
+      ? "Tax Q&amp;A submission"
+      : "statutory document";
+
+  const attributionParts = [name];
+  if (ican) attributionParts.push(`ICAN ${ican}`);
+  if (firm) attributionParts.push(firm);
+  const attributionLine = attributionParts.join(" · ");
+
+  const subject = `Thank you for contributing to Taxora · ${data.topicOrTitle}`;
+  const html = renderTaxoraEmailShell({
+    subject,
+    heroTag: "CA Hub",
+    headline: "Contribution received",
+    introHtml: `Thank you, <strong style="color:#0c1410;">${name}</strong>. We received your ${typeLabel} and will verify citations before crediting <strong style="color:#0c1410;">${attributionLine}</strong>.`,
+    highlightHtml: `<strong style="color:#0c1410;">${title}</strong><br /><span style="font-size:11.5px;color:#5a6962;">${category} · FY ${fiscalYear}</span>`,
+    ctaLabel: "Open CA Knowledge Hub",
+    ctaHref: `${origin}/contribute`,
+    footerNoteHtml: `Editorial confirmation sent to <strong style="color:#45534c;">${email}</strong>.`,
+  });
 
   return { subject, html };
 }
@@ -258,13 +221,18 @@ export async function sendResendEmail({
   to,
   subject,
   html,
-  from = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev",
+  from,
 }: SendEmailInput): Promise<{ ok: boolean; id?: string; error?: string }> {
   const apiKey = process.env.RESEND_API_KEY?.trim();
   if (!apiKey) {
     console.error("[resend] RESEND_API_KEY is not configured.");
     return { ok: false, error: "RESEND_API_KEY is not configured." };
   }
+
+  const resolvedFrom =
+    from?.trim() ||
+    process.env.RESEND_FROM_EMAIL?.trim() ||
+    "onboarding@resend.dev";
 
   try {
     const res = await fetch("https://api.resend.com/emails", {
@@ -274,7 +242,7 @@ export async function sendResendEmail({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from,
+        from: resolvedFrom,
         to,
         subject,
         html,

@@ -1,6 +1,10 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { createClient } from "@supabase/supabase-js";
 import { type NextRequest, NextResponse } from "next/server";
+import { getSupabaseServerConfig } from "@/lib/tax-repository";
+
+const STORAGE_BUCKET = "tax-documents";
 
 const SOURCE_FILE_REGISTRY: Record<
   string,
@@ -35,6 +39,36 @@ const SOURCE_FILE_REGISTRY: Record<
     contentType: "application/pdf",
   },
 };
+
+function resolveBucketPublicUrl(fileName: string): string | null {
+  const storagePath = `sources/${fileName}`;
+  const config = getSupabaseServerConfig();
+  if (config) {
+    const supabase = createClient(config.url, config.key, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+    const { data } = supabase.storage
+      .from(STORAGE_BUCKET)
+      .getPublicUrl(storagePath);
+    if (data?.publicUrl) return data.publicUrl;
+  }
+
+  const rawUrl = (
+    process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    process.env.SUPABASE_URL ||
+    ""
+  ).trim();
+  if (
+    !rawUrl ||
+    rawUrl.includes("<your-project-id>") ||
+    rawUrl.includes("your-project")
+  ) {
+    return null;
+  }
+
+  const baseUrl = rawUrl.replace(/\/+$/, "");
+  return `${baseUrl}/storage/v1/object/public/${STORAGE_BUCKET}/sources/${encodeURIComponent(fileName)}`;
+}
 
 export async function GET(
   req: NextRequest,
@@ -73,8 +107,22 @@ export async function GET(
       },
     });
   } catch {
+    const bucketUrl = resolveBucketPublicUrl(entry.fileName);
+    if (bucketUrl) {
+      return NextResponse.redirect(bucketUrl, {
+        status: 307,
+        headers: {
+          "Cache-Control": "public, max-age=3600",
+        },
+      });
+    }
+
     return NextResponse.json(
-      { status: "error", message: "Statutory source file not found on disk." },
+      {
+        status: "error",
+        message:
+          "Statutory source file not found on disk and storage bucket is not configured.",
+      },
       { status: 404 },
     );
   }

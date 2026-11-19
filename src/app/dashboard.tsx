@@ -318,6 +318,7 @@ export default function Dashboard() {
   const [waitlistReason, setWaitlistReason] = useState<
     "limit_reached" | "direct"
   >("direct");
+  const [waitlistPassCode, setWaitlistPassCode] = useState<string | null>(null);
 
   useEffect(() => {
     if (isSignedIn) {
@@ -405,10 +406,20 @@ export default function Dashboard() {
     if (query) {
       setDraft(query);
       if (!window.matchMedia("(max-width: 899px)").matches) {
-        if (!window.matchMedia("(max-width: 899px)").matches) {
-          focusComposer.current = true;
-        }
+        focusComposer.current = true;
       }
+    }
+
+    const rawPass = params.get("pass")?.trim().toUpperCase();
+    if (rawPass && /^TXR-L1-[A-Z0-9]{4,10}$/.test(rawPass)) {
+      setWaitlistPassCode(rawPass);
+      setWaitlistReason("direct");
+      setWaitlistOpen(true);
+      navigator.clipboard?.writeText(rawPass).catch(() => {});
+      params.delete("pass");
+      const nextSearch = params.toString();
+      const cleanedUrl = `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""}${window.location.hash}`;
+      window.history.replaceState({}, "", cleanedUrl);
     }
   }, []);
 
@@ -981,6 +992,7 @@ export default function Dashboard() {
         onRenameSession={handleRenameSession}
         waitlistOpen={waitlistOpen}
         waitlistReason={waitlistReason}
+        waitlistPassCode={waitlistPassCode}
         onOpenWaitlist={(reason = "direct") => {
           setWaitlistReason(reason);
           setWaitlistOpen(true);

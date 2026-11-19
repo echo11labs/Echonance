@@ -273,6 +273,12 @@
   color: #111312;
 }
 
+.ticketActionsGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .ticketCode {
   padding: 2px 7px;
   border-radius: 4px;
@@ -282,6 +288,24 @@
   font-size: 0.7rem;
   font-weight: 700;
   color: #111312;
+  user-select: all;
+}
+
+.copyCodeBtn {
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: #111312;
+  border: 1px solid #111312;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.68rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.14s ease;
+}
+
+.copyCodeBtn:hover {
+  opacity: 0.86;
 }
 
 .confirmedEmail {
