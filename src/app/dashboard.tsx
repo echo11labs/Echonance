@@ -1355,6 +1355,10 @@ export default function Dashboard() {
                   )
                 }
                 onSubmit={submitMessage}
+                onOpenWaitlist={() => {
+                  setWaitlistReason("direct");
+                  setWaitlistOpen(true);
+                }}
                 onVoiceChange={(isActive, level, audioBlob) => {
                   setIsVoiceActive(isActive);
                   setVoiceLevel(level);

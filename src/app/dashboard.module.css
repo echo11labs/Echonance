@@ -1422,6 +1422,12 @@
   color: var(--white);
 }
 
+.composerTool[aria-pressed="true"] {
+  border-color: rgba(0, 223, 129, 0.36);
+  background: rgba(0, 223, 129, 0.1);
+  color: var(--accent);
+}
+
 .composerTool svg {
   width: 16px;
   height: 16px;
@@ -1646,44 +1652,116 @@
   position: relative;
 }
 
-.voiceStatusWrapper {
-  margin-block-end: 14px;
+.featureAlertWrapper {
+  width: 100%;
+  max-width: 880px;
+  margin-block-end: 10px;
   display: flex;
   justify-content: center;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
-.voiceStatusPill {
+.featureAlertBar {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 14px;
-  border-radius: 9999px;
-  background: rgba(8, 22, 16, 0.78);
+  max-width: 100%;
+  min-height: 30px;
+  padding: 5px 6px 5px 10px;
+  border-radius: 0;
+  background: rgba(7, 13, 10, 0.92);
   border: 1px solid rgba(0, 223, 129, 0.28);
+  border-left: 2px solid var(--accent);
   box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.4),
-    0 0 12px rgba(0, 223, 129, 0.12);
-  backdrop-filter: blur(8px);
-  color: var(--accent);
-  font-size: 0.81rem;
-  font-weight: 500;
+    0 6px 18px rgba(0, 0, 0, 0.45),
+    0 0 10px rgba(0, 223, 129, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.featureAlertPulse {
+  width: 5px;
+  height: 5px;
+  flex-shrink: 0;
+  border-radius: 0;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+  animation: voiceDotPulse 1.8s ease-in-out infinite;
+}
+
+.featureAlertText {
+  margin: 0;
+  color: #9bb0a5;
+  font-size: 0.74rem;
+  font-weight: 450;
+  line-height: 1.35;
   letter-spacing: -0.01em;
 }
 
-.voiceStatusDot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 8px var(--accent);
-  animation: voiceDotPulse 1.6s ease-in-out infinite;
+.featureAlertLead {
+  color: #f4f5f4;
+  font-weight: 600;
 }
 
-.voiceStatusDotActive {
-  background: #00f0ff;
-  box-shadow: 0 0 10px #00f0ff;
-  animation-duration: 0.8s;
+.featureAlertDivider {
+  width: 1px;
+  height: 12px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.featureAlertCta {
+  flex-shrink: 0;
+  padding: 2px 5px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-size: 0.73rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color 0.14s ease,
+    background 0.14s ease;
+}
+
+.featureAlertCta:hover,
+.featureAlertCta:focus-visible {
+  background: rgba(0, 223, 129, 0.12);
+  color: #6ee7b7;
+  outline: none;
+}
+
+.featureAlertDismiss {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #7c8d84;
+  cursor: pointer;
+  transition:
+    color 0.14s ease,
+    background 0.14s ease;
+}
+
+.featureAlertDismiss:hover,
+.featureAlertDismiss:focus-visible {
+  background: rgba(255, 255, 255, 0.06);
+  color: #f4f5f4;
+  outline: none;
+}
+
+.featureAlertDismiss svg {
+  width: 12px;
+  height: 12px;
 }
 
 @keyframes voiceDotPulse {
@@ -2367,6 +2445,16 @@
   .composer {
     padding: 10px 11px 8px;
     border-radius: 14px;
+  }
+
+  .featureAlertBar {
+    flex-wrap: wrap;
+    row-gap: 4px;
+    padding: 6px 8px 6px 10px;
+  }
+
+  .featureAlertDivider {
+    display: none;
   }
 
   .composer textarea {

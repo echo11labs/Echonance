@@ -1,7 +1,16 @@
 import { SignIn } from "@clerk/nextjs";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { isClerkConfigured } from "@/lib/clerk-config";
+import { buildPageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Sign In",
+  description: "Sign in to Taxora to unlock additional workspace sessions.",
+  path: "/sign-in",
+  noIndex: true,
+});
 
 export default function SignInPage() {
   const clerkEnabled = isClerkConfigured();

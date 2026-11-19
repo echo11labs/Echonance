@@ -1,9 +1,73 @@
-import type { Viewport } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "@fontsource-variable/instrument-sans";
 import "@fontsource-variable/noto-sans-devanagari";
 import { AppSplash } from "@/components/app-splash";
 import { AuthProvider } from "@/components/auth-provider";
+import { JsonLd } from "@/components/json-ld";
+import {
+  buildRootJsonLd,
+  CORE_KEYWORDS,
+  getSiteUrl,
+  OG_IMAGES,
+  ORGANIZATION_NAME,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_TAGLINE,
+} from "@/lib/seo";
+
+export const metadata: Metadata = {
+  metadataBase: getSiteUrl(),
+  title: {
+    default: `${SITE_NAME} — ${SITE_TAGLINE}`,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  keywords: CORE_KEYWORDS,
+  authors: [{ name: ORGANIZATION_NAME }],
+  creator: ORGANIZATION_NAME,
+  publisher: ORGANIZATION_NAME,
+  category: "legal",
+  icons: {
+    icon: "/icon.png",
+    apple: "/taxora-logo.png",
+  },
+  alternates: {
+    types: {
+      "text/markdown": "/llms.txt",
+    },
+  },
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+    : undefined,
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    alternateLocale: ["ne_NP"],
+    siteName: SITE_NAME,
+    title: `${SITE_NAME} — ${SITE_TAGLINE}`,
+    description: SITE_DESCRIPTION,
+    images: [OG_IMAGES.workspace, OG_IMAGES.emblem],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} — ${SITE_TAGLINE}`,
+    description: SITE_DESCRIPTION,
+    images: [OG_IMAGES.workspace.url],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
+  },
+};
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -53,6 +117,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             '"Instrument Sans Variable", "Noto Sans Devanagari Variable", "Instrument Sans", system-ui, -apple-system, sans-serif',
         }}
       >
+        <JsonLd data={buildRootJsonLd()} />
         <AppSplash />
         <AuthProvider>{children}</AuthProvider>
       </body>

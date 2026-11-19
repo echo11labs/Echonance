@@ -1,7 +1,17 @@
 import { SignUp } from "@clerk/nextjs";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { isClerkConfigured } from "@/lib/clerk-config";
+import { buildPageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Sign Up",
+  description:
+    "Create a Taxora account to save additional research workspaces.",
+  path: "/sign-up",
+  noIndex: true,
+});
 
 export default function SignUpPage() {
   const clerkEnabled = isClerkConfigured();

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUp, Mic, Plus } from "lucide-react";
+import { ArrowUp, Mic, Plus, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   type FormEvent,
@@ -33,6 +33,7 @@ export default function ChatComposer({
   onChange,
   onRemove,
   onSubmit,
+  onOpenWaitlist,
   onVoiceChange,
 }: {
   value: string;
@@ -43,6 +44,7 @@ export default function ChatComposer({
   onAdd: (attachments: ChatAttachment[]) => void;
   onRemove: (id: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  onOpenWaitlist?: () => void;
   onVoiceChange?: (
     isActive: boolean,
     audioLevel: number,
@@ -64,9 +66,13 @@ export default function ChatComposer({
 
   const onVoiceChangeRef = useRef(onVoiceChange);
   onVoiceChangeRef.current = onVoiceChange;
-  const [voicePreviewOpen, setVoicePreviewOpen] = useState(false);
-  const [attachNoticeOpen, setAttachNoticeOpen] = useState(false);
+  const [featureAlertSource, setFeatureAlertSource] = useState<
+    "attach" | "voice" | null
+  >(null);
   const [atHintOpen, setAtHintOpen] = useState(false);
+
+  const featureAlertOpen = featureAlertSource !== null;
+  const isVoicePreview = featureAlertSource === "voice";
 
   useEffect(() => {
     if (hasMessages) return;
@@ -78,25 +84,30 @@ export default function ChatComposer({
     };
   }, [hasMessages]);
 
-  function toggleVoicePreview() {
-    setAttachNoticeOpen(false);
-    setVoicePreviewOpen((prev) => {
-      const next = !prev;
-      onVoiceChangeRef.current?.(next, next ? 0.55 : 0);
-      return next;
-    });
-  }
-
-  function toggleAttachNotice() {
-    if (voicePreviewOpen) {
-      setVoicePreviewOpen(false);
+  useEffect(() => {
+    onVoiceChangeRef.current?.(isVoicePreview, isVoicePreview ? 22 : 0);
+    return () => {
       onVoiceChangeRef.current?.(false, 0);
+    };
+  }, [isVoicePreview]);
+
+  useEffect(() => {
+    if (!featureAlertOpen) return;
+    function handleEscape(event: globalThis.KeyboardEvent) {
+      if (event.key === "Escape") {
+        setFeatureAlertSource(null);
+      }
     }
-    setAttachNoticeOpen((prev) => !prev);
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [featureAlertOpen]);
+
+  function toggleFeatureAlert(source: "attach" | "voice") {
+    setFeatureAlertSource((prev) => (prev === source ? null : source));
   }
 
   useEffect(() => {
-    if (hasMessages || value.trim() || voicePreviewOpen) return;
+    if (hasMessages || value.trim() || isVoicePreview) return;
 
     let timer: ReturnType<typeof setTimeout>;
 
@@ -134,7 +145,7 @@ export default function ChatComposer({
   }, [
     hasMessages,
     value,
-    voicePreviewOpen,
+    isVoicePreview,
     displayText,
     isDeleting,
     currentPrompt,
@@ -233,31 +244,63 @@ export default function ChatComposer({
     }
   }
 
-  const micLabel = voicePreviewOpen
-    ? "Close voice mode notice"
-    : "Voice mode (coming soon)";
-  const statusMessage = voicePreviewOpen
-    ? "Our model is under development — voice mode will be available soon."
-    : attachNoticeOpen
-      ? "File attachment analysis is under development — available soon."
-      : "";
+  const micLabel =
+    featureAlertSource === "voice"
+      ? "Close feature status notice"
+      : "Voice input (in development)";
+  const attachLabel =
+    featureAlertSource === "attach"
+      ? "Close feature status notice"
+      : "File attachments (in development)";
 
   return (
     <div className={styles.composerWrapper}>
       <AnimatePresence>
-        {(voicePreviewOpen || attachNoticeOpen) && (
+        {featureAlertOpen && (
           <motion.div
-            className={styles.voiceStatusWrapper}
-            initial={{ opacity: 0, y: 12, scale: 0.94 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.94 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className={styles.featureAlertWrapper}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
+            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
             role="status"
             aria-live="polite"
           >
-            <div className={styles.voiceStatusPill}>
-              <span className={styles.voiceStatusDot} aria-hidden="true" />
-              <span>{statusMessage}</span>
+            <div className={styles.featureAlertBar}>
+              <span className={styles.featureAlertPulse} aria-hidden="true" />
+              <p className={styles.featureAlertText}>
+                <span className={styles.featureAlertLead}>
+                  Building our own model
+                </span>{" "}
+                — voice &amp; file tools release stage by stage.
+              </p>
+              {onOpenWaitlist && (
+                <>
+                  <span
+                    className={styles.featureAlertDivider}
+                    aria-hidden="true"
+                  />
+                  <button
+                    type="button"
+                    className={styles.featureAlertCta}
+                    onClick={() => {
+                      setFeatureAlertSource(null);
+                      onOpenWaitlist();
+                    }}
+                  >
+                    Join waitlist →
+                  </button>
+                </>
+              )}
+              <button
+                type="button"
+                className={styles.featureAlertDismiss}
+                onClick={() => setFeatureAlertSource(null)}
+                aria-label="Dismiss development notice"
+                title="Dismiss"
+              >
+                <X aria-hidden="true" />
+              </button>
             </div>
           </motion.div>
         )}
@@ -266,12 +309,8 @@ export default function ChatComposer({
       <form
         className={styles.composer}
         onSubmit={(event) => {
-          if (voicePreviewOpen) {
-            setVoicePreviewOpen(false);
-            onVoiceChangeRef.current?.(false, 0);
-          }
-          if (attachNoticeOpen) {
-            setAttachNoticeOpen(false);
+          if (featureAlertOpen) {
+            setFeatureAlertSource(null);
           }
           onSubmit(event);
         }}
@@ -339,11 +378,11 @@ export default function ChatComposer({
               <button
                 className={styles.composerTool}
                 type="button"
-                aria-label="File attachments (under development)"
-                aria-pressed={attachNoticeOpen}
+                aria-label={attachLabel}
+                aria-pressed={featureAlertSource === "attach"}
                 ref={addButton}
-                title="File attachments (coming soon)"
-                onClick={toggleAttachNotice}
+                title={attachLabel}
+                onClick={() => toggleFeatureAlert("attach")}
               >
                 <Plus aria-hidden="true" />
               </button>
@@ -390,24 +429,20 @@ export default function ChatComposer({
               </button>
             </div>
 
-            <div
-              className={styles.recordingStatus}
-              role="status"
-              aria-live="polite"
-              data-error={false}
-              data-hearing={voicePreviewOpen}
-            >
-              <span>{statusMessage}</span>
-            </div>
+            <div className={styles.recordingStatus} aria-hidden="true" />
 
             <div className={styles.composerActions}>
               <button
-                className={`${styles.composerTool} ${styles.micTool}`}
+                className={cn(
+                  styles.composerTool,
+                  styles.micTool,
+                  isVoicePreview && styles.listeningActive,
+                )}
                 type="button"
                 aria-label={micLabel}
-                aria-pressed={voicePreviewOpen}
+                aria-pressed={isVoicePreview}
                 title={micLabel}
-                onClick={toggleVoicePreview}
+                onClick={() => toggleFeatureAlert("voice")}
               >
                 <Mic aria-hidden="true" />
               </button>

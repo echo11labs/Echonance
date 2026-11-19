@@ -1,12 +1,28 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/json-ld";
+import { buildAboutJsonLd, buildPageMetadata, CORE_KEYWORDS } from "@/lib/seo";
 import About from "./about";
 
-export const metadata: Metadata = {
-  title: "About Taxora | Purpose & Principles",
+export const metadata: Metadata = buildPageMetadata({
+  title: "About Taxora — Nepal Tax Intelligence vs General AI",
   description:
-    "Learn about the mission, principles, and statutory architecture behind Taxora — Nepal’s authoritative tax intelligence and research platform.",
-};
+    "Explore the statutory architecture, practitioner verification standards, and comparison showing how Taxora delivers Nepal tax law precision.",
+  path: "/about",
+  absoluteTitle: true,
+  ogVariant: "emblem",
+  keywords: [
+    ...CORE_KEYWORDS,
+    "Taxora vs ChatGPT Nepal tax",
+    "Eco Eleven Tech Taxora",
+    "नेपाल कर कानून AI",
+  ],
+});
 
 export default function AboutPage() {
-  return <About />;
+  return (
+    <>
+      <JsonLd data={buildAboutJsonLd()} />
+      <About />
+    </>
+  );
 }

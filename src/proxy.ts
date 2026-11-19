@@ -8,8 +8,21 @@ import { isClerkServerConfigured } from "@/lib/clerk-config";
 
 const clerkHandler = clerkMiddleware();
 
+const PUBLIC_METADATA_PATHS = new Set([
+  "/api/health",
+  "/robots.txt",
+  "/sitemap.xml",
+  "/llms.txt",
+  "/llms-full.txt",
+  "/manifest.webmanifest",
+  "/icon.png",
+]);
+
 export default async function proxy(req: NextRequest, event: NextFetchEvent) {
-  if (req.nextUrl.pathname === "/api/health" || !isClerkServerConfigured()) {
+  if (
+    PUBLIC_METADATA_PATHS.has(req.nextUrl.pathname) ||
+    !isClerkServerConfigured()
+  ) {
     return NextResponse.next();
   }
 
