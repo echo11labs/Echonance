@@ -1,0 +1,196 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: rgba(4, 7, 5, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.backdropDismiss {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  cursor: default;
+}
+
+.panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0d1210;
+  color: #f4f5f4;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.72);
+  padding: 24px;
+  box-sizing: border-box;
+  font-family:
+    "Instrument Sans Variable",
+    "Instrument Sans",
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 223, 129, 0.1);
+  border: 1px solid rgba(0, 223, 129, 0.28);
+  color: #6ee7b7;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.badgeDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: #00df81;
+}
+
+.closeBtn {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #131916;
+  color: #9da7a3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.closeBtn:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+  color: #f4f5f4;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: #f4f5f4;
+}
+
+.description {
+  margin: 0 0 20px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: #9da7a3;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.primaryBtn {
+  width: 100%;
+  padding: 11px 16px;
+  border-radius: 9px;
+  border: 1px solid #00df81;
+  background: #00df81;
+  color: #060807;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.primaryBtn:hover {
+  background: #34d399;
+  border-color: #34d399;
+}
+
+.dangerBtn {
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 9px;
+  border: 1px solid rgba(248, 113, 113, 0.32);
+  background: rgba(239, 68, 68, 0.08);
+  color: #fca5a5;
+  font-size: 13.5px;
+  font-weight: 500;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.dangerBtn:hover {
+  background: rgba(239, 68, 68, 0.16);
+  border-color: rgba(248, 113, 113, 0.55);
+  color: #fecaca;
+}
+
+.secondaryBtn {
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #131916;
+  color: #d6dcd9;
+  font-size: 13.5px;
+  font-weight: 500;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.secondaryBtn:hover {
+  background: #1a221e;
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}

@@ -10,12 +10,14 @@ export function isConfiguredKey(value: string | undefined): boolean {
 /**
  * Safe to call from both Server and Client Components; uses direct dot
  * property access so Next.js inlines NEXT_PUBLIC_* variables on the client.
+ * Automatically enabled whenever a non-placeholder publishable key exists,
+ * unless explicitly disabled with NEXT_PUBLIC_ENABLE_CLERK=false.
  */
 export function isClerkConfigured(): boolean {
-  return (
-    process.env.NEXT_PUBLIC_ENABLE_CLERK === "true" &&
-    isConfiguredKey(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY)
-  );
+  if (process.env.NEXT_PUBLIC_ENABLE_CLERK === "false") {
+    return false;
+  }
+  return isConfiguredKey(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 }
 
 /**

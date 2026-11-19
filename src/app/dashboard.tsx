@@ -13,6 +13,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
+import { useAuthStatus } from "@/components/auth-provider";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { SphereAnimation } from "@/components/sphere-animation";
 import { VoiceWaveVisualizer } from "@/components/ui/voice-wave-visualizer";
@@ -20,10 +21,10 @@ import {
   type ChatSession,
   createNewSession,
   generateSessionTitle,
+  getChatSessionLimit,
   limitSessions,
   loadActiveSessionId,
   loadStoredSessions,
-  MAX_CHAT_SESSIONS,
   saveActiveSessionId,
   saveStoredSessions,
   summarizeSession,
@@ -307,13 +308,22 @@ export default function Dashboard() {
   const [isSphereHovered, setIsSphereHovered] = useState(false);
   const [spherePromptIndex, setSpherePromptIndex] = useState(0);
 
-  // Multi-session state management (individual user sessions, up to 3)
+  // Multi-session state management (1 guest session; +2 after sign-in up to 3)
+  const { isSignedIn, clerkConfigured } = useAuthStatus();
+  const sessionLimit = getChatSessionLimit(isSignedIn, clerkConfigured);
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [activeSessionId, setActiveSessionId] = useState<string>("");
+  const [guestLimitOpen, setGuestLimitOpen] = useState(false);
   const [waitlistOpen, setWaitlistOpen] = useState(false);
   const [waitlistReason, setWaitlistReason] = useState<
     "limit_reached" | "direct"
   >("direct");
+
+  useEffect(() => {
+    if (isSignedIn) {
+      setGuestLimitOpen(false);
+    }
+  }, [isSignedIn]);
 
   const [responseLang, setResponseLang] = useState<ResponseLanguage>("en");
   const [starterQuestions, setStarterQuestions] = useState<MockQAPair[]>(() =>
@@ -455,13 +465,21 @@ export default function Dashboard() {
     activeIntervals.current = [];
   }
 
+  function openSessionLimitPrompt() {
+    if (clerkConfigured && !isSignedIn) {
+      setGuestLimitOpen(true);
+    } else {
+      setWaitlistReason("limit_reached");
+      setWaitlistOpen(true);
+    }
+  }
+
   function newChat() {
     clearActiveIntervals();
 
-    // Enforce the 3-session preview cap: trying to add more than 3 chats opens the Waitlist
-    if (sessions.length >= MAX_CHAT_SESSIONS) {
-      setWaitlistReason("limit_reached");
-      setWaitlistOpen(true);
+    // Guests get 1 session and are prompted to sign in for 2 more (3 total)
+    if (sessions.length >= sessionLimit) {
+      openSessionLimitPrompt();
       return;
     }
 
@@ -539,6 +557,23 @@ export default function Dashboard() {
       saveStoredSessions(remaining);
       return remaining;
     });
+  }
+
+  function handleDeleteAndRestart() {
+    const targetId = activeSession?.id ?? sessions[0]?.id;
+    if (targetId) {
+      handleDeleteSession(targetId);
+    }
+    setGuestLimitOpen(false);
+    setDraft("");
+    setAttachments([]);
+    setIsVoiceActive(false);
+    setVoiceLevel(0);
+    if (!window.matchMedia("(max-width: 899px)").matches) {
+      focusComposer.current = true;
+    }
+    setComposerVersion((value) => value + 1);
+    if (section) window.location.hash = assistant.id;
   }
 
   function handleSendMessage(
@@ -658,9 +693,8 @@ export default function Dashboard() {
     let targetSessionId = activeSession?.id ?? activeSessionId;
     let createdSession: ChatSession | null = null;
     if (!activeSession || !sessions.some((s) => s.id === targetSessionId)) {
-      if (sessions.length >= MAX_CHAT_SESSIONS) {
-        setWaitlistReason("limit_reached");
-        setWaitlistOpen(true);
+      if (sessions.length >= sessionLimit) {
+        openSessionLimitPrompt();
         return;
       }
       createdSession = createNewSession(
@@ -952,6 +986,10 @@ export default function Dashboard() {
           setWaitlistOpen(true);
         }}
         onCloseWaitlist={() => setWaitlistOpen(false)}
+        guestLimitOpen={guestLimitOpen}
+        onOpenGuestLimit={() => setGuestLimitOpen(true)}
+        onCloseGuestLimit={() => setGuestLimitOpen(false)}
+        onDeleteAndRestart={handleDeleteAndRestart}
         onNavigate={(id) => {
           if (id === "tax-law-library" || id === "about") {
             return;

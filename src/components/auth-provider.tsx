@@ -1,10 +1,55 @@
 "use client";
 
-import { ClerkProvider, Show, SignInButton, UserButton } from "@clerk/nextjs";
-import { type ReactNode, Suspense } from "react";
+import {
+  ClerkProvider,
+  Show,
+  SignInButton,
+  UserButton,
+  useClerk,
+  useUser,
+} from "@clerk/nextjs";
+import { createContext, type ReactNode, Suspense, useContext } from "react";
 import { isClerkConfigured } from "@/lib/clerk-config";
 
 export { isClerkConfigured };
+
+export interface AuthStatusValue {
+  isLoaded: boolean;
+  isSignedIn: boolean;
+  clerkConfigured: boolean;
+  openSignIn: () => void;
+}
+
+const DEFAULT_AUTH_STATUS: AuthStatusValue = {
+  isLoaded: true,
+  isSignedIn: false,
+  clerkConfigured: false,
+  openSignIn: () => {},
+};
+
+const AuthStatusContext = createContext<AuthStatusValue>(DEFAULT_AUTH_STATUS);
+
+export function useAuthStatus(): AuthStatusValue {
+  return useContext(AuthStatusContext);
+}
+
+function ClerkAuthBridge({ children }: { children: ReactNode }) {
+  const { isLoaded, isSignedIn } = useUser();
+  const clerk = useClerk();
+
+  return (
+    <AuthStatusContext.Provider
+      value={{
+        isLoaded,
+        isSignedIn: Boolean(isSignedIn),
+        clerkConfigured: true,
+        openSignIn: () => clerk.openSignIn(),
+      }}
+    >
+      {children}
+    </AuthStatusContext.Provider>
+  );
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const configured = isClerkConfigured();
@@ -21,12 +66,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           },
         }}
       >
-        {children}
+        <ClerkAuthBridge>{children}</ClerkAuthBridge>
       </ClerkProvider>
     );
   }
 
-  return <>{children}</>;
+  return (
+    <AuthStatusContext.Provider value={DEFAULT_AUTH_STATUS}>
+      {children}
+    </AuthStatusContext.Provider>
+  );
 }
 
 export function AuthNavControls({ collapsed }: { collapsed?: boolean }) {

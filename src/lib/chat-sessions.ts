@@ -39,9 +39,19 @@ interface StoredChatSession extends Omit<ChatSession, "messages"> {
   messages: StoredChatMessage[];
 }
 
+export const GUEST_CHAT_SESSIONS_LIMIT = 1;
 export const MAX_CHAT_SESSIONS = 3;
 export const SESSIONS_STORAGE_KEY = "taxora_tax_chat_sessions_v2";
 export const ACTIVE_SESSION_STORAGE_KEY = "taxora_tax_active_session_id_v2";
+
+export function getChatSessionLimit(
+  isSignedIn: boolean,
+  clerkConfigured = true,
+): number {
+  return !clerkConfigured || isSignedIn
+    ? MAX_CHAT_SESSIONS
+    : GUEST_CHAT_SESSIONS_LIMIT;
+}
 
 /**
  * Enforces the maximum retained session count (3 most recent individual sessions).

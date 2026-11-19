@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { type MouseEvent, useEffect, useRef, useState } from "react";
 import {
   Check,
   Clock,
@@ -27,9 +27,15 @@ import {
 } from "@/app/custom-icons";
 import {
   type ChatSessionSummary,
+  getChatSessionLimit,
+  loadActiveSessionId,
+  loadStoredSessions,
   MAX_CHAT_SESSIONS,
+  saveActiveSessionId,
+  saveStoredSessions,
 } from "@/lib/chat-sessions";
-import { AuthNavControls } from "./auth-provider";
+import { AuthNavControls, useAuthStatus } from "./auth-provider";
+import { SessionLimitModal } from "./session-limit-modal";
 import { loadStoredWaitlistPass, WaitlistModal } from "./waitlist-modal";
 import styles from "./app-sidebar.module.css";
 
@@ -120,6 +126,10 @@ export interface AppSidebarProps {
   waitlistReason?: "limit_reached" | "direct";
   onOpenWaitlist?: (reason?: "limit_reached" | "direct") => void;
   onCloseWaitlist?: () => void;
+  guestLimitOpen?: boolean;
+  onOpenGuestLimit?: () => void;
+  onCloseGuestLimit?: () => void;
+  onDeleteAndRestart?: () => void;
 }
 
 export function AppSidebar({
@@ -137,8 +147,19 @@ export function AppSidebar({
   waitlistReason,
   onOpenWaitlist,
   onCloseWaitlist,
+  guestLimitOpen,
+  onOpenGuestLimit,
+  onCloseGuestLimit,
+  onDeleteAndRestart,
 }: AppSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const {
+    isLoaded: authLoaded,
+    isSignedIn,
+    clerkConfigured,
+    openSignIn,
+  } = useAuthStatus();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
@@ -146,6 +167,7 @@ export function AppSidebar({
   const [internalWaitlistReason, setInternalWaitlistReason] = useState<
     "limit_reached" | "direct"
   >("direct");
+  const [internalGuestLimitOpen, setInternalGuestLimitOpen] = useState(false);
   const [hasJoinedWaitlist, setHasJoinedWaitlist] = useState(false);
   const [waitlistDismissed, setWaitlistDismissed] = useState(false);
   const renameInputRef = useRef<HTMLInputElement>(null);
@@ -154,8 +176,21 @@ export function AppSidebar({
     setHasJoinedWaitlist(Boolean(loadStoredWaitlistPass()));
   }, []);
 
+  const isGuestLimited = clerkConfigured && authLoaded && !isSignedIn;
+  const effectiveSessionLimit = getChatSessionLimit(
+    !authLoaded ? true : isSignedIn,
+    clerkConfigured,
+  );
+
   const isWaitlistModalOpen = waitlistOpen ?? internalWaitlistOpen;
   const activeWaitlistReason = waitlistReason ?? internalWaitlistReason;
+  const isGuestLimitModalOpen = guestLimitOpen ?? internalGuestLimitOpen;
+
+  useEffect(() => {
+    if (isSignedIn) {
+      setInternalGuestLimitOpen(false);
+    }
+  }, [isSignedIn]);
 
   function triggerOpenWaitlist(reason: "limit_reached" | "direct" = "direct") {
     setMobileOpen(false);
@@ -173,6 +208,48 @@ export function AppSidebar({
     } else {
       setInternalWaitlistOpen(false);
     }
+  }
+
+  function triggerOpenGuestLimit() {
+    setMobileOpen(false);
+    if (onOpenGuestLimit) {
+      onOpenGuestLimit();
+    } else {
+      setInternalGuestLimitOpen(true);
+    }
+  }
+
+  function triggerCloseGuestLimit() {
+    if (onCloseGuestLimit) {
+      onCloseGuestLimit();
+    } else {
+      setInternalGuestLimitOpen(false);
+    }
+  }
+
+  function handleGuestSignIn() {
+    triggerCloseGuestLimit();
+    if (clerkConfigured) {
+      openSignIn();
+    } else {
+      router.push("/sign-in");
+    }
+  }
+
+  function handleGuestDeleteAndRestart() {
+    triggerCloseGuestLimit();
+    if (onDeleteAndRestart) {
+      onDeleteAndRestart();
+      return;
+    }
+
+    const stored = loadStoredSessions();
+    const targetId = activeSessionId ?? loadActiveSessionId() ?? stored[0]?.id;
+    const remaining = targetId ? stored.filter((s) => s.id !== targetId) : [];
+    saveStoredSessions(remaining);
+    const nextActiveId = remaining[0]?.id ?? null;
+    saveActiveSessionId(nextActiveId);
+    router.push(nextActiveId ? `/?session=${nextActiveId}` : "/");
   }
 
   useEffect(() => {
@@ -209,13 +286,33 @@ export function AppSidebar({
     onNavigate?.(linkId);
   }
 
+  function handleSessionLimitReached(): boolean {
+    if (!sessions) return false;
+    const limit = getChatSessionLimit(isSignedIn, clerkConfigured);
+    if (sessions.length < limit) return false;
+
+    if (clerkConfigured && !isSignedIn) {
+      triggerOpenGuestLimit();
+    } else {
+      triggerOpenWaitlist("limit_reached");
+    }
+    return true;
+  }
+
   function handleNewChatClick() {
     setMobileOpen(false);
-    if (sessions && sessions.length >= MAX_CHAT_SESSIONS) {
-      triggerOpenWaitlist("limit_reached");
+    if (handleSessionLimitReached()) {
       return;
     }
     onNewChat?.();
+  }
+
+  function handleNewChatLinkClick(e: MouseEvent<HTMLAnchorElement>) {
+    if (handleSessionLimitReached()) {
+      e.preventDefault();
+      return;
+    }
+    handleNavClick("tax-assistant");
   }
 
   function handleStartRename(id: string, title: string) {
@@ -248,9 +345,13 @@ export function AppSidebar({
           <p className={styles.navHeading}>Saved Sessions</p>
           <span
             className={styles.sessionsLimitBadge}
-            title={`Up to ${MAX_CHAT_SESSIONS} saved sessions`}
+            title={
+              isGuestLimited
+                ? "1 free guest session (sign in for 2 more)"
+                : `Up to ${MAX_CHAT_SESSIONS} saved sessions`
+            }
           >
-            {sessions.length}/{MAX_CHAT_SESSIONS}
+            {sessions.length}/{effectiveSessionLimit}
           </span>
         </div>
         <ul className={styles.sessionsList} aria-label="Saved chat sessions">
@@ -382,15 +483,26 @@ export function AppSidebar({
             );
           })}
         </ul>
-        {sessions.length >= MAX_CHAT_SESSIONS && (
+        {isGuestLimited && sessions.length >= effectiveSessionLimit ? (
           <button
             type="button"
             className={styles.sessionLimitWaitlistBtn}
-            onClick={() => triggerOpenWaitlist("limit_reached")}
+            onClick={triggerOpenGuestLimit}
           >
             <Sparkles size={12} aria-hidden="true" />
-            <span>3/3 limit • Join Legal-1 Waitlist →</span>
+            <span>1/1 guest limit • Sign in for +2 →</span>
           </button>
+        ) : (
+          sessions.length >= MAX_CHAT_SESSIONS && (
+            <button
+              type="button"
+              className={styles.sessionLimitWaitlistBtn}
+              onClick={() => triggerOpenWaitlist("limit_reached")}
+            >
+              <Sparkles size={12} aria-hidden="true" />
+              <span>3/3 limit • Join Legal-1 Waitlist →</span>
+            </button>
+          )
         )}
       </div>
     );
@@ -522,14 +634,7 @@ export function AppSidebar({
             className={styles.mobileBarNewChat}
             aria-label="New chat"
             title="New chat"
-            onClick={(e) => {
-              if (sessions && sessions.length >= MAX_CHAT_SESSIONS) {
-                e.preventDefault();
-                triggerOpenWaitlist("limit_reached");
-                return;
-              }
-              handleNavClick("tax-assistant");
-            }}
+            onClick={handleNewChatLinkClick}
           >
             <NewChatIcon aria-hidden="true" />
           </Link>
@@ -591,14 +696,7 @@ export function AppSidebar({
             className={styles.newChat}
             aria-label="New chat"
             title="New chat"
-            onClick={(e) => {
-              if (sessions && sessions.length >= MAX_CHAT_SESSIONS) {
-                e.preventDefault();
-                triggerOpenWaitlist("limit_reached");
-                return;
-              }
-              handleNavClick("tax-assistant");
-            }}
+            onClick={handleNewChatLinkClick}
           >
             <NewChatIcon aria-hidden="true" />
             <span className={styles.navLabel}>New chat</span>
@@ -684,14 +782,7 @@ export function AppSidebar({
               <Link
                 href="/"
                 className={styles.newChat}
-                onClick={(e) => {
-                  if (sessions && sessions.length >= MAX_CHAT_SESSIONS) {
-                    e.preventDefault();
-                    triggerOpenWaitlist("limit_reached");
-                    return;
-                  }
-                  handleNavClick("tax-assistant");
-                }}
+                onClick={handleNewChatLinkClick}
               >
                 <NewChatIcon aria-hidden="true" />
                 <span className={styles.navLabel}>New chat</span>
@@ -716,6 +807,14 @@ export function AppSidebar({
         reason={activeWaitlistReason}
         onClose={triggerCloseWaitlist}
         onPassUpdated={() => setHasJoinedWaitlist(true)}
+      />
+
+      <SessionLimitModal
+        open={isGuestLimitModalOpen}
+        hasSessions={Boolean(sessions && sessions.length > 0)}
+        onClose={triggerCloseGuestLimit}
+        onSignIn={handleGuestSignIn}
+        onDeleteAndRestart={handleGuestDeleteAndRestart}
       />
     </>
   );
