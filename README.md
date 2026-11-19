@@ -1,6 +1,6 @@
-# Echonance
+# Taxora
 
-Echonance is a planned Nepal tax intelligence platform from Eco Eleven Tech. It brings tax legislation, Inland Revenue Department guidance and related legal materials into one research workspace. Chartered accountants, tax consultants, auditors and finance teams will be able to find relevant provisions, establish which version applied in a given period and trace an explanation back to the underlying evidence. The product also serves accounting students and businesses that need to understand Nepal’s tax requirements.
+Taxora is a planned Nepal tax intelligence platform from Eco Eleven Tech. It brings tax legislation, Inland Revenue Department guidance and related legal materials into one research workspace. Chartered accountants, tax consultants, auditors and finance teams will be able to find relevant provisions, establish which version applied in a given period and trace an explanation back to the underlying evidence. The product also serves accounting students and businesses that need to understand Nepal’s tax requirements.
 
 ## What the platform will do
 
@@ -14,7 +14,7 @@ Echonance is a planned Nepal tax intelligence platform from Eco Eleven Tech. It 
 | Tax calculators and case research | Apply versioned calculation rules and find related tax judgments as coverage expands.                                                                                                                                                         |
 | Compliance and document tools     | Track obligations, work with private PDFs and spreadsheets, and prepare research reports in later releases.                                                                                                                                   |
 
-## How Echonance handles evidence
+## How Taxora handles evidence
 
 Research starts with official materials, including legislation, rules, Finance Acts, IRD circulars and directives, and available judgments. The platform will preserve originals, record issuance and effective dates, and require expert review before publication. An answer should let a reader open the exact cited provision or page and see the version used. Unverified material is held out of the published research corpus.
 

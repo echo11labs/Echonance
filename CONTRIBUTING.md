@@ -29,7 +29,7 @@ pnpm build
 pnpm test:smoke
 ```
 
-`pnpm check` verifies the Git index, formatting, Biome lint rules and strict TypeScript after generating Next.js route types. Use `pnpm format` to apply formatting. The smoke test starts the production build on loopback, checks the health response and security headers, then stops the server. Set `ECHONANCE_SMOKE_PORT` to a free port if 3100 is in use.
+`pnpm check` verifies the Git index, formatting, Biome lint rules and strict TypeScript after generating Next.js route types. Use `pnpm format` to apply formatting. The smoke test starts the production build on loopback, checks the health response and security headers, then stops the server. Set `TAXORA_SMOKE_PORT` to a free port if 3100 is in use.
 
 ## Verification as features land
 

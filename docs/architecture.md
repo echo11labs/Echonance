@@ -2,7 +2,7 @@
 
 ## Foundation
 
-Echonance starts with a Next.js App Router application in `src/app`. This repository currently contains an HTTP health route, a pinned Node.js and pnpm toolchain, strict TypeScript, Biome linting for Next.js and React, Prettier and GitHub Actions validation. Product surfaces and their dependencies enter when a feature needs them. Liveness reports only that the web process can respond. Introduce a separate readiness probe when the deployment depends on backing services.
+Taxora starts with a Next.js App Router application in `src/app`. This repository currently contains an HTTP health route, a pinned Node.js and pnpm toolchain, strict TypeScript, Biome linting for Next.js and React, Prettier and GitHub Actions validation. Product surfaces and their dependencies enter when a feature needs them. Liveness reports only that the web process can respond. Introduce a separate readiness probe when the deployment depends on backing services.
 
 Next.js owns presentation and same-origin web entry points. Server Components are the default for future pages. Use Client Components for interaction and browser APIs that need them. Future Route Handlers and Server Actions must validate input and authorize the action at the server boundary. Keep service credentials and API adapters in server-only modules. Authenticated and tenant-specific results require private cache behavior and correctly scoped invalidation.
 

@@ -1,0 +1,394 @@
+/* ========================================================
+   COMPARISON SPHERE SECTION
+   Clean editorial callouts + Contributor Sphere centerpiece
+   ======================================================== */
+
+.comparisonSection {
+  position: relative;
+  background: #0d1210;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 40px 36px 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  overflow: hidden;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.titleGroup {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.stepNumber {
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+  font-weight: 500;
+  color: rgba(244, 245, 244, 0.36);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.sectionHeading {
+  font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+  font-weight: 600;
+  color: #f4f5f4;
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+.ringIndicator {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.subLead {
+  margin: -14px 0 0;
+  color: #c2ccc7;
+  font-size: 0.96rem;
+  max-width: 64ch;
+  line-height: 1.72;
+}
+
+/* ========================================================
+   THREE-COLUMN SPHERE STAGE (Flow-aligned, zero overlap)
+   ======================================================== */
+.stageContainer {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 300px minmax(220px, 1fr);
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  margin: 8px 0;
+}
+
+.centerCubeWrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 0;
+  pointer-events: none;
+}
+
+.sphereFrame {
+  position: relative;
+  width: 268px;
+  height: 268px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cubeAmbientGlow {
+  position: absolute;
+  inset: 14px;
+  border-radius: 999px;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 223, 129, 0.24) 0%,
+    rgba(0, 223, 129, 0.08) 48%,
+    transparent 76%
+  );
+  filter: blur(18px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sphereStageCenter {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cubeCaption {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #79d5a9;
+  text-align: center;
+}
+
+/* Group headers (visible on all sizes, especially helpful on mobile) */
+.columnGroupLabelOther,
+.columnGroupLabelTaxora {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.columnGroupLabelOther {
+  color: #ff9b82;
+}
+
+.columnGroupLabelTaxora {
+  color: #6ee7b7;
+}
+
+/* Left Callouts (Other AI) */
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 22px;
+}
+
+.calloutLeft {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.calloutLeft:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.calloutLeftBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.calloutMetric {
+  font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #ffb09c;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.calloutDesc {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.62;
+  color: #cfd8d3;
+}
+
+.calloutTag {
+  margin-top: 2px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #ff9e85;
+}
+
+/* Inline horizontal connector + dot pointing toward sphere */
+.connectorLeft,
+.connectorRight {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 34px;
+}
+
+.connectorLineLeft {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 107, 74, 0.2) 0%,
+    rgba(255, 107, 74, 0.72) 100%
+  );
+}
+
+.connectorDotLeft {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #ff7b5c;
+  box-shadow: 0 0 8px rgba(255, 107, 74, 0.65);
+}
+
+.connectorLineRight {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 223, 129, 0.75) 0%,
+    rgba(0, 223, 129, 0.22) 100%
+  );
+}
+
+.connectorDotRight {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #00df81;
+  box-shadow: 0 0 8px rgba(0, 223, 129, 0.65);
+}
+
+/* Right Callouts (Taxora) */
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+}
+
+.calloutRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.calloutRight:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.calloutIconNode {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 223, 129, 0.14);
+  border: 1px solid rgba(0, 223, 129, 0.42);
+  color: #00df81;
+  box-shadow: 0 0 12px rgba(0, 223, 129, 0.16);
+}
+
+.calloutRightText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.calloutRightTitle {
+  font-size: 0.96rem;
+  font-weight: 600;
+  color: #f4f5f4;
+  line-height: 1.35;
+}
+
+.calloutRightSub {
+  font-size: 0.82rem;
+  color: #c2ccc7;
+  line-height: 1.5;
+}
+
+/* ========================================================
+   FULL SIDE-BY-SIDE COMPARISON MATRIX
+   ======================================================== */
+.matrixCard {
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.matrixHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.matrixTitle {
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #79d5a9;
+  margin: 0;
+}
+
+.matrixToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  color: #d6dfdb;
+  font-size: 0.76rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.matrixToggleBtn:hover {
+  background: rgba(0, 223, 129, 0.1);
+  border-color: rgba(0, 223, 129, 0.35);
+}
+
+/* ========================================================
+   RESPONSIVE ADJUSTMENTS
+   ======================================================== */
+@media (max-width: 1120px) {
+  .comparisonSection {
+    padding: 28px 20px;
+  }
+
+  .stageContainer {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .centerCubeWrap {
+    order: -1;
+    padding: 4px 0 8px;
+  }
+
+  .sphereFrame {
+    width: 230px;
+    height: 230px;
+  }
+
+  .connectorLeft,
+  .connectorRight {
+    display: none;
+  }
+
+  .leftColumn,
+  .rightColumn {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .comparisonSection {
+    padding: 24px 16px;
+  }
+
+  .sphereFrame {
+    width: 210px;
+    height: 210px;
+  }
+
+  .matrixCard {
+    padding: 16px 14px;
+  }
+}

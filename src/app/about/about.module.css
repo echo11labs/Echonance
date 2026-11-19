@@ -1,0 +1,778 @@
+/* ========================================================
+   ABOUT US - NURA INHERITED DESIGN (TAXORA DARK PALETTE)
+   Exact sizing, spacing, typography, and card hierarchy
+   ======================================================== */
+
+.shell {
+  display: flex;
+  min-height: 100dvh;
+  width: 100%;
+  background: #060807;
+  color: #f4f5f4;
+  font-family:
+    "Instrument Sans Variable", "Instrument Sans", "Anek Devanagari",
+    "Noto Sans Devanagari Variable", system-ui, sans-serif;
+  line-height: 1.5;
+  color-scheme: dark;
+}
+
+.shell[lang="np"] {
+  font-family:
+    "Anek Devanagari", "Noto Sans Devanagari Variable",
+    "Instrument Sans Variable", system-ui, sans-serif;
+  line-height: 1.78;
+}
+
+.shell[lang="np"] h1,
+.shell[lang="np"] h2 {
+  font-family:
+    "Noto Serif Devanagari", "Anek Devanagari", "Noto Sans Devanagari Variable",
+    serif;
+  letter-spacing: 0;
+  line-height: 1.42;
+}
+
+.shell[lang="np"] h3 {
+  letter-spacing: 0;
+  line-height: 1.45;
+  font-size: 1.14rem;
+}
+
+.shell *,
+.shell *::before,
+.shell *::after {
+  box-sizing: border-box;
+}
+
+/* Main Scrollable Canvas */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  position: relative;
+  overflow-y: auto;
+  height: 100dvh;
+  background: #060807;
+}
+
+.contentWrapper {
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 36px 104px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* ========================================================
+   1. HERO CARD (NURA STYLE - Rounded Card with Overlay)
+   ======================================================== */
+.heroCard {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 8.8;
+  min-height: 340px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0b0f0d;
+}
+
+.heroCardBackdrop {
+  position: absolute;
+  inset: 0;
+}
+
+.heroCardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.55;
+  filter: contrast(1.1);
+}
+
+.heroCardOverlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(6, 8, 7, 0.45) 0%,
+    rgba(6, 8, 7, 0.9) 100%
+  );
+}
+
+.heroCardContent {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 28px 32px;
+}
+
+.heroCardTopBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.brandMark {
+  font-size: 0.84rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #ffffff;
+}
+
+.heroReturnBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: all 0.16s ease;
+}
+
+.heroReturnBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #00df81;
+  border-color: rgba(0, 223, 129, 0.4);
+}
+
+.heroReturnText {
+  font-weight: 550;
+}
+
+.heroTopActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.langToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: rgba(0, 223, 129, 0.14);
+  backdrop-filter: blur(10px);
+  color: #8ee1b8;
+  font-size: 0.76rem;
+  font-weight: 600;
+  border: 1px solid rgba(0, 223, 129, 0.35);
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.langToggleBtn:hover {
+  background: rgba(0, 223, 129, 0.24);
+  color: #ffffff;
+}
+
+.heroDisplayTitle {
+  font-size: clamp(2.8rem, 5.6vw, 4.4rem);
+  font-weight: 600;
+  color: #ffffff;
+  text-align: center;
+  margin: 0;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.heroCardBottomSpacer {
+  height: 24px;
+}
+
+/* ========================================================
+   2. PRINCIPLES CONTAINER (NURA Large White Container)
+   ======================================================== */
+.principlesContainer {
+  background: #0d1210;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 44px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.sectionPill {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #8b9691;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.principlesHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.principlesLead {
+  font-size: clamp(1.7rem, 3.2vw, 2.65rem);
+  line-height: 1.15;
+  font-weight: 550;
+  letter-spacing: -0.025em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.comparisonEyebrow {
+  display: block;
+  color: #79d5a9;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.comparisonTableWrap {
+  overflow-x: auto;
+}
+
+.comparisonTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  line-height: 1.65;
+  text-align: left;
+}
+
+.comparisonCaption {
+  text-align: left;
+  color: #b1bcb6;
+  font-size: 0.78rem;
+  padding-bottom: 16px;
+}
+
+.comparisonTable th,
+.comparisonTable td {
+  padding: 20px 16px;
+  vertical-align: top;
+  border-bottom: 1px solid #29332e;
+}
+
+.comparisonTable thead th {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.comparisonTable thead th span {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: #a5c6b4;
+  margin-top: 4px;
+}
+
+.comparisonTable tbody th {
+  width: 23%;
+  font-weight: 500;
+  color: #e0e8e3;
+  padding-left: 0;
+}
+
+.comparisonTable td {
+  width: 38.5%;
+  color: #b1bcb6;
+}
+
+.comparisonTable tr > :last-child {
+  background: #14261c;
+  color: #e0efe6;
+  border-bottom-color: #2d4838;
+}
+
+.comparisonTable thead th:last-child {
+  border-top: 2px solid #79d5a9;
+  color: #8ee1b8;
+}
+
+.comparisonNote {
+  margin: 16px 0 0;
+  color: #a6b2ab;
+  font-size: 0.82rem;
+  line-height: 1.75;
+}
+
+.comparisonNote a {
+  color: #c2d9cc;
+  text-underline-offset: 3px;
+}
+
+.shell a:focus-visible {
+  outline: 2px solid #79d5a9;
+  outline-offset: 5px;
+}
+
+/* Intro and example question */
+.comparisonIntro {
+  color: #b1bcb6;
+  max-width: 62ch;
+  margin: 0;
+}
+
+.comparisonExample {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.comparisonExample p {
+  flex: 1 1 28ch;
+  margin: 0;
+  color: #dfe7e3;
+  margin-top: 10px;
+  max-width: 38ch;
+  font-size: 1.05rem;
+  text-wrap: pretty;
+}
+
+.comparisonExample > div {
+  flex: 1 1 28ch;
+}
+
+/* 3 Interactive iOS Liquid Glass Cards Grid */
+.glassGridStage {
+  position: relative;
+  border-radius: 18px;
+}
+
+.glassAmbientOrbLeft,
+.glassAmbientOrbRight {
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+  filter: blur(54px);
+  z-index: 0;
+}
+
+.glassAmbientOrbLeft {
+  top: -18px;
+  left: 6%;
+  width: 240px;
+  height: 180px;
+  background: radial-gradient(
+    circle,
+    rgba(0, 223, 129, 0.22) 0%,
+    rgba(16, 185, 129, 0.06) 55%,
+    transparent 75%
+  );
+}
+
+.glassAmbientOrbRight {
+  bottom: -24px;
+  right: 8%;
+  width: 260px;
+  height: 190px;
+  background: radial-gradient(
+    circle,
+    rgba(56, 189, 248, 0.14) 0%,
+    rgba(0, 223, 129, 0.1) 50%,
+    transparent 75%
+  );
+}
+
+.principlesGrid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.principleCard {
+  --spot-x: 50%;
+  --spot-y: 0%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 24px 22px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background:
+    radial-gradient(
+      280px circle at var(--spot-x) var(--spot-y),
+      rgba(255, 255, 255, 0.14),
+      rgba(0, 223, 129, 0.05) 45%,
+      transparent 76%
+    ),
+    linear-gradient(
+      155deg,
+      rgba(255, 255, 255, 0.085) 0%,
+      rgba(255, 255, 255, 0.03) 52%,
+      rgba(0, 223, 129, 0.04) 100%
+    );
+  backdrop-filter: blur(26px) saturate(165%);
+  -webkit-backdrop-filter: blur(26px) saturate(165%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+    0 18px 42px rgba(0, 0, 0, 0.42);
+  transition:
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.24s ease,
+    box-shadow 0.28s ease;
+}
+
+.principleCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.26);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.34),
+    inset 0 -1px 0 rgba(0, 223, 129, 0.14),
+    0 24px 52px rgba(0, 0, 0, 0.56),
+    0 0 28px rgba(0, 223, 129, 0.1);
+}
+
+.glassSpecularRim {
+  position: absolute;
+  inset: 0 18px auto 18px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.42) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.glassIconCapsule {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(0, 223, 129, 0.1) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 8px 18px rgba(0, 0, 0, 0.28);
+  color: #8ee1b8;
+  transition:
+    transform 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.2s ease;
+}
+
+.principleCard:hover .glassIconCapsule {
+  transform: scale(1.06);
+  color: #ffffff;
+}
+
+.cardBodyContent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cardTitle {
+  font-size: 1.06rem;
+  font-weight: 630;
+  color: #f7f9f8;
+  margin: 0;
+  letter-spacing: -0.018em;
+}
+
+.cardDesc {
+  font-size: 0.86rem;
+  color: #aeb9b4;
+  line-height: 1.58;
+  margin: 0;
+}
+
+/* ========================================================
+   3. OUR TEAM CONTAINER (NURA Sizing & Hierarchy)
+   ======================================================== */
+.teamContainer {
+  padding: 12px 6px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.teamSectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.teamSectionTitle {
+  font-size: clamp(1.55rem, 2.4vw, 2.1rem);
+  font-weight: 550;
+  color: #f4f5f4;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.teamCardsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.founderCard {
+  display: flex;
+  flex-direction: column;
+  background: #0d1210;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.founderCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.founderPhotoWrap {
+  width: 100%;
+  aspect-ratio: 4 / 3.8;
+  overflow: hidden;
+  background: #060807;
+}
+
+.founderPhotoDevendra {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
+}
+
+.founderPhotoDeepak {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  display: block;
+}
+
+.founderMeta {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.founderName {
+  font-size: 1.25rem;
+  font-weight: 650;
+  color: #f4f5f4;
+  letter-spacing: -0.02em;
+  margin: 0 0 4px;
+}
+
+.founderRole {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #00df81;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin: 0 0 14px;
+}
+
+.founderBio {
+  font-size: 0.9rem;
+  color: #9da7a3;
+  line-height: 1.68;
+  margin: 0;
+}
+
+/* ========================================================
+   4. BOTTOM CALL TO ACTION
+   ======================================================== */
+.ctaSection {
+  padding-top: 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.ctaTextGroup {
+  max-width: 540px;
+}
+
+.ctaTitle {
+  font-size: 1.45rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: #f4f5f4;
+  margin: 0 0 8px;
+}
+
+.ctaDesc {
+  font-size: 0.92rem;
+  color: #8b9691;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.ctaActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.primaryCtaBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 4px;
+  background: #00df81;
+  color: #060807;
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none;
+  transition:
+    background 0.16s ease,
+    transform 0.16s ease;
+}
+
+.primaryCtaBtn:hover {
+  background: #05f892;
+  transform: translateY(-1px);
+}
+
+.secondaryCtaBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 4px;
+  background: transparent;
+  color: #f4f5f4;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  font-weight: 500;
+  font-size: 0.88rem;
+  text-decoration: none;
+  transition: all 0.16s ease;
+}
+
+.secondaryCtaBtn:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.shell[lang="np"] .comparisonIntro {
+  font-size: 1.04rem;
+  line-height: 1.82;
+  color: #d0d8d3;
+  max-width: 60ch;
+}
+
+.shell[lang="np"] .cardDesc {
+  font-size: 0.96rem;
+  line-height: 1.72;
+  color: #c8d1cc;
+}
+
+.shell[lang="np"] .comparisonTable {
+  font-size: 0.94rem;
+  line-height: 1.75;
+}
+
+.shell[lang="np"] .comparisonTable td,
+.shell[lang="np"] .comparisonTable tbody th {
+  color: #d2dbd6;
+}
+
+/* ========================================================
+   RESPONSIVENESS
+   ======================================================== */
+@media (max-width: 899px) {
+  .contentWrapper {
+    padding: calc(68px + env(safe-area-inset-top, 0px)) 16px 64px;
+  }
+
+  .principlesGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .teamCardsGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .comparisonTable th,
+  .comparisonTable td {
+    padding: 14px 10px;
+    overflow-wrap: anywhere;
+  }
+
+  .comparisonTable {
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  .comparisonTable thead th {
+    font-size: 0.75rem;
+  }
+
+  .principlesContainer {
+    padding: 28px 20px;
+  }
+
+  .heroCard {
+    aspect-ratio: auto;
+    min-height: 300px;
+  }
+
+  .heroCardContent {
+    padding: 20px 20px;
+  }
+
+  .ctaSection {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ctaActions {
+    width: 100%;
+  }
+
+  .primaryCtaBtn,
+  .secondaryCtaBtn {
+    flex: 1;
+    justify-content: center;
+  }
+}

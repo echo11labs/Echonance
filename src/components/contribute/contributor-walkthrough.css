@@ -1,0 +1,302 @@
+.driver-active .driver-active-element {
+  outline: 1px solid rgba(16, 185, 129, 0.72);
+  outline-offset: 12px;
+  border-radius: 10px;
+}
+
+.driver-popover.taxora-ora-popover {
+  box-sizing: border-box;
+  width: min(416px, calc(100vw - 28px));
+  min-width: 288px;
+  max-width: 416px;
+  padding: 22px;
+  border-radius: 12px;
+  border: 1px solid #262c29;
+  background-color: #121614;
+  color: #e4e8e6;
+  font-family: inherit;
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.78);
+}
+
+.driver-popover.taxora-ora-popover .driver-popover-arrow-side-left {
+  border-left-color: #262c29;
+}
+
+.driver-popover.taxora-ora-popover .driver-popover-arrow-side-right {
+  border-right-color: #262c29;
+}
+
+.driver-popover.taxora-ora-popover .driver-popover-arrow-side-top {
+  border-top-color: #262c29;
+}
+
+.driver-popover.taxora-ora-popover .driver-popover-arrow-side-bottom {
+  border-bottom-color: #262c29;
+}
+
+.driver-popover.taxora-ora-popover .driver-popover-close-btn {
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid #262c29;
+  background-color: #161b18;
+  color: #9ba39f;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.driver-popover.taxora-ora-popover .driver-popover-close-btn:hover,
+.driver-popover.taxora-ora-popover .driver-popover-close-btn:focus-visible {
+  border-color: #3a423e;
+  color: #f3f5f4;
+}
+
+.taxora-ora-guide-header {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 10px;
+  padding-right: 32px;
+}
+
+.taxora-ora-avatar {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  object-fit: contain;
+  display: block;
+  mask-image: radial-gradient(circle, #000 54%, transparent 94%);
+  -webkit-mask-image: radial-gradient(circle, #000 54%, transparent 94%);
+  animation: taxoraOraFloat 3.1s ease-in-out infinite;
+}
+
+@keyframes taxoraOraFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1.5deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(1.5deg);
+  }
+}
+
+.taxora-ora-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.taxora-ora-badge {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #10b981;
+}
+
+.taxora-ora-role {
+  font-size: 11.5px;
+  color: #7d8682;
+}
+
+.driver-popover.taxora-ora-popover .driver-popover-title {
+  margin: 0;
+  padding-right: 24px;
+  font-size: 15.5px;
+  font-weight: 600;
+  line-height: 1.32;
+  letter-spacing: -0.015em;
+  color: #f3f5f4;
+}
+
+.driver-popover.taxora-ora-popover .driver-popover-description {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #a9b1ad;
+}
+
+.taxora-ora-best-box {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 0 8px 8px 0;
+  border-left: 2px solid #10b981;
+  background-color: #0e1110;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.taxora-ora-best-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #10b981;
+}
+
+.taxora-ora-best-text {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #d6dcd9;
+}
+
+.driver-popover.taxora-ora-popover .driver-popover-footer {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #1e2320;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.driver-popover.taxora-ora-popover .driver-popover-progress-text {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #88918d;
+  white-space: nowrap;
+}
+
+.driver-popover.taxora-ora-popover .driver-popover-navigation-btns {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.driver-popover.taxora-ora-popover
+  .driver-popover-navigation-btns
+  button
+  + button {
+  margin-inline-start: 0;
+}
+
+.driver-popover.taxora-ora-popover .driver-popover-footer-btn {
+  padding: 7px 13px;
+  border-radius: 8px;
+  border: 1px solid #262c29;
+  background-color: #161b18;
+  color: #cfd5d2;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.25;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.driver-popover.taxora-ora-popover .driver-popover-footer-btn:hover,
+.driver-popover.taxora-ora-popover .driver-popover-footer-btn:focus-visible {
+  border-color: #3a423e;
+  background-color: #1c221f;
+  color: #f3f5f4;
+}
+
+.driver-popover.taxora-ora-popover .driver-popover-next-btn {
+  border-color: #10b981;
+  background-color: #10b981;
+  color: #07120e;
+  font-weight: 600;
+}
+
+.driver-popover.taxora-ora-popover .driver-popover-next-btn:hover,
+.driver-popover.taxora-ora-popover .driver-popover-next-btn:focus-visible {
+  border-color: #34d399;
+  background-color: #34d399;
+  color: #07120e;
+}
+
+.taxora-ora-samples-btn {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #9ba39f;
+  transition: color 0.15s ease;
+}
+
+.taxora-ora-samples-btn:hover,
+.taxora-ora-samples-btn:focus-visible {
+  color: #34d399;
+}
+
+@media (max-width: 767px) {
+  .driver-active .driver-active-element {
+    outline-offset: 4px;
+    scroll-margin-top: 76px;
+  }
+
+  .driver-popover.taxora-ora-popover {
+    width: calc(100vw - 20px);
+    min-width: 0;
+    max-width: calc(100vw - 20px);
+    max-height: 44dvh;
+    overflow-y: auto;
+    padding: 14px 16px;
+    border-radius: 10px;
+  }
+
+  .taxora-ora-guide-header {
+    gap: 9px;
+    margin-bottom: 8px;
+    padding-right: 28px;
+  }
+
+  .taxora-ora-avatar {
+    width: 34px;
+    height: 34px;
+  }
+
+  .driver-popover.taxora-ora-popover .driver-popover-title {
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .driver-popover.taxora-ora-popover .driver-popover-description {
+    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.48;
+  }
+
+  .taxora-ora-best-box {
+    margin-top: 8px;
+    padding: 8px 10px;
+  }
+
+  .taxora-ora-best-text {
+    font-size: 11.5px;
+    line-height: 1.42;
+  }
+
+  .driver-popover.taxora-ora-popover .driver-popover-footer {
+    margin-top: 12px;
+    padding-top: 10px;
+    gap: 8px;
+  }
+
+  .driver-popover.taxora-ora-popover .driver-popover-footer-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .taxora-ora-avatar {
+    animation: none;
+  }
+}

@@ -1,0 +1,125 @@
+.wrap {
+  position: relative;
+  width: 100%;
+}
+
+.trigger {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background-color: #111413;
+  border: 1px solid #262c29;
+  color: #f0f2f1;
+  font-size: 13.5px;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.trigger:hover {
+  border-color: #3a443f;
+}
+
+.trigger:focus-visible,
+.triggerOpen {
+  outline: none;
+  border-color: #10b981;
+  background-color: #131715;
+}
+
+.triggerText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: #7c8581;
+  transition:
+    transform 0.16s ease,
+    color 0.16s ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+  color: #10b981;
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding: 4px;
+  border-radius: 10px;
+  background-color: #101312;
+  border: 1px solid #2c3530;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.65);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 260px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #2f3b35 transparent;
+}
+
+.menu::-webkit-scrollbar {
+  width: 5px;
+}
+
+.menu::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 4px 0;
+}
+
+.menu::-webkit-scrollbar-thumb {
+  background-color: #2c3731;
+  border-radius: 999px;
+}
+
+.menu::-webkit-scrollbar-thumb:hover {
+  background-color: #10b981;
+}
+
+.option {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #cfd5d2;
+  font-size: 13px;
+  font-family: inherit;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+  transition:
+    background-color 0.12s ease,
+    color 0.12s ease;
+}
+
+.option:hover,
+.optionFocused {
+  background-color: #1a211e;
+  color: #ffffff;
+}
+
+.optionSelected {
+  background-color: #12241b;
+  color: #34d399;
+  font-weight: 600;
+}

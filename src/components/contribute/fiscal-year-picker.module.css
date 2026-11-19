@@ -1,0 +1,425 @@
+.wrap {
+  position: relative;
+  width: 100%;
+}
+
+.trigger {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background-color: #111413;
+  border: 1px solid #262c29;
+  color: #f0f2f1;
+  font-size: 13.5px;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.trigger:hover {
+  border-color: #3a443f;
+}
+
+.trigger:focus-visible,
+.triggerOpen {
+  outline: none;
+  border-color: #10b981;
+  background-color: #131715;
+}
+
+.triggerLeft {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.triggerIcon {
+  flex-shrink: 0;
+  color: #7c8581;
+  transition: color 0.15s ease;
+}
+
+.triggerOpen .triggerIcon {
+  color: #10b981;
+}
+
+.triggerText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: #7c8581;
+  transition:
+    transform 0.16s ease,
+    color 0.16s ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+  color: #10b981;
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  z-index: 55;
+  width: min(304px, calc(100vw - 32px));
+  border-radius: 12px;
+  background-color: #101312;
+  border: 1px solid #2c3530;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.76);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.alignLeft {
+  left: 0;
+}
+
+.alignRight {
+  right: 0;
+}
+
+.topControls {
+  padding: 10px 10px 8px;
+  border-bottom: 1px solid #1c211e;
+  background-color: #121614;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.searchWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 9px;
+  color: #6b7470;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 26px 6px 28px;
+  border-radius: 6px;
+  border: 1px solid #232a26;
+  background-color: #0b0d0c;
+  color: #e6e8e7;
+  font-size: 12px;
+  font-family: inherit;
+  transition: border-color 0.15s ease;
+}
+
+.searchInput::placeholder {
+  color: #5b6460;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #10b981;
+}
+
+.searchClearBtn {
+  position: absolute;
+  right: 6px;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #7c8581;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.searchClearBtn:hover {
+  color: #ffffff;
+}
+
+.decadeRail {
+  margin: 0;
+  padding: 0;
+  border: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.decadePill {
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid #202623;
+  background-color: #0e1110;
+  color: #88918d;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    border-color 0.14s ease,
+    background-color 0.14s ease,
+    color 0.14s ease;
+}
+
+.decadePill:hover {
+  border-color: #34403a;
+  color: #dce2df;
+}
+
+.decadePillActive {
+  border-color: rgba(16, 185, 129, 0.55);
+  background-color: #10241b;
+  color: #34d399;
+}
+
+.timelineScroll {
+  max-height: 248px;
+  overflow-y: auto;
+  padding: 6px 8px 10px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #2f3b35 transparent;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 10px,
+    #000 calc(100% - 14px),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 10px,
+    #000 calc(100% - 14px),
+    transparent 100%
+  );
+}
+
+.timelineScroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.timelineScroll::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 6px 0;
+}
+
+.timelineScroll::-webkit-scrollbar-thumb {
+  background-color: #2c3731;
+  border-radius: 999px;
+}
+
+.timelineScroll::-webkit-scrollbar-thumb:hover {
+  background-color: #10b981;
+}
+
+.decadeGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.decadeHeader {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: #101312;
+  padding: 6px 8px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b7470;
+}
+
+.timelineList {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: 14px;
+}
+
+.timelineList::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 10px;
+  bottom: 10px;
+  width: 1px;
+  background-color: #1f2622;
+}
+
+.yearRow {
+  position: relative;
+  width: 100%;
+  padding: 7px 10px 7px 12px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #cfd5d2;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background-color 0.12s ease,
+    border-color 0.12s ease,
+    color 0.12s ease;
+}
+
+.yearRow:hover {
+  background-color: #171d1a;
+  color: #ffffff;
+}
+
+.yearRowSelected {
+  background-color: #10241b;
+  border-color: rgba(16, 185, 129, 0.36);
+  color: #ffffff;
+}
+
+.yearNode {
+  position: absolute;
+  left: -11px;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  background-color: #2a332e;
+  border: 1px solid #101312;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.yearRow:hover .yearNode {
+  background-color: #5b6e65;
+}
+
+.yearRow.yearRowSelected .yearNode {
+  background-color: #10b981;
+  transform: translateY(-50%) scale(1.22);
+}
+
+.yearMain {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.yearBs {
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: inherit;
+}
+
+.yearAd {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: #6b7470;
+}
+
+.yearRowSelected .yearAd {
+  color: #8fb8a4;
+}
+
+.yearRight {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.badge {
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background-color: #1a211e;
+  color: #9ba39f;
+}
+
+.badgeCurrent {
+  background-color: rgba(16, 185, 129, 0.16);
+  color: #34d399;
+}
+
+.checkIcon {
+  color: #10b981;
+}
+
+.emptyState {
+  padding: 22px 12px;
+  text-align: center;
+  font-size: 12.5px;
+  color: #7c8581;
+}
+
+.footer {
+  padding: 8px 12px;
+  border-top: 1px solid #1c211e;
+  background-color: #121614;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.footerCount {
+  font-size: 11px;
+  color: #6b7470;
+  font-variant-numeric: tabular-nums;
+}
+
+.jumpCurrentBtn {
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid #24302a;
+  background-color: #141c18;
+  color: #34d399;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    border-color 0.14s ease,
+    background-color 0.14s ease;
+}
+
+.jumpCurrentBtn:hover {
+  border-color: #10b981;
+  background-color: #10241b;
+}

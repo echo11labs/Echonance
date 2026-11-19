@@ -3,7 +3,7 @@ import { spawn } from "node:child_process";
 import { once } from "node:events";
 import { setTimeout } from "node:timers/promises";
 
-const port = process.env.ECHONANCE_SMOKE_PORT ?? "3100";
+const port = process.env.TAXORA_SMOKE_PORT ?? "3100";
 const url = new URL(`http://127.0.0.1:${port}/api/health`);
 const server = spawn(
   process.execPath,
@@ -49,7 +49,13 @@ try {
     "camera=(), microphone=(), geolocation=()",
   );
   assert.equal(response.headers.get("x-powered-by"), null);
-  console.log("Production health endpoint passed");
+  const chat = await fetch(new URL("/", url));
+  assert.equal(chat.status, 200);
+  assert.equal(
+    chat.headers.get("permissions-policy"),
+    "camera=(), microphone=(self), geolocation=()",
+  );
+  console.log("Production health and chat permissions checks passed");
 } finally {
   server.kill();
   await closed;
