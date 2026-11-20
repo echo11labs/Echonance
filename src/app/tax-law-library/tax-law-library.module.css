@@ -205,6 +205,7 @@
 
 .searchInput {
   flex: 1;
+  min-width: 0;
   height: 100%;
   background: transparent;
   border: none;
@@ -223,6 +224,7 @@
 
 .clearSearchBtn {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   width: 24px;
@@ -830,6 +832,20 @@
     padding: 24px 16px 48px;
   }
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cardTitle,
+  .authorityLabel,
+  .resultTitle,
+  .resultSub {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .cardBio {
+    display: block;
+  }
+  .statsRow {
+    flex-wrap: wrap;
+    row-gap: 8px;
   }
 }

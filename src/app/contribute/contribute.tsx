@@ -112,16 +112,14 @@ interface FeedbackState {
 
 function MascotTipTicker({
   tips,
+  sizingMessages,
   priorityMessage,
   paused,
-  lineClassName,
-  cursorClassName,
 }: {
   tips: string[];
+  sizingMessages: string[];
   priorityMessage: string | null;
   paused: boolean;
-  lineClassName: string;
-  cursorClassName: string;
 }) {
   const [tipIndex, setTipIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState("");
@@ -196,10 +194,18 @@ function MascotTipTicker({
   }, [activeLine, paused, priorityMessage]);
 
   return (
-    <p className={lineClassName} aria-live="polite">
-      <span>{displayedText}</span>
-      <span className={cursorClassName} aria-hidden="true" />
-    </p>
+    <div className={styles.mascotTipSlot}>
+      {sizingMessages.map((message) => (
+        <p key={message} className={styles.mascotTipMeasure} aria-hidden="true">
+          <span>{message}</span>
+          <span className={styles.mascotCursor} />
+        </p>
+      ))}
+      <p className={styles.mascotLine} aria-live="polite">
+        <span>{displayedText}</span>
+        <span className={styles.mascotCursor} aria-hidden="true" />
+      </p>
+    </div>
   );
 }
 
@@ -252,7 +258,7 @@ export default function Contribute() {
   );
   const [stagedFiles, setStagedFiles] = useState<UploadFileItem[]>([]);
   const [uploadProgress, setUploadProgress] = useState<{
-    fileName: string;
+    fileType: string;
     progressText: string;
     progress: number;
     xhr: XMLHttpRequest;
@@ -424,14 +430,15 @@ export default function Contribute() {
     const validItems: UploadFileItem[] = [];
     let firstError: string | null = null;
 
-    for (const file of files) {
+    for (const [index, file] of files.entries()) {
+      const label = copy.uploadDrawer.documentLabel(index + 1);
       const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
       if (!ALLOWED_EXTS.has(ext)) {
-        firstError ??= copy.uploadDrawer.unsupportedFileError(file.name);
+        firstError ??= copy.uploadDrawer.unsupportedFileError(label);
         continue;
       }
       if (file.size === 0 || file.size > MAX_UPLOAD_BYTES) {
-        firstError ??= copy.uploadDrawer.fileTooLargeError(file.name);
+        firstError ??= copy.uploadDrawer.fileTooLargeError(label);
         continue;
       }
       validItems.push({
@@ -491,10 +498,6 @@ export default function Contribute() {
       formData.append("documentType", docType);
       formData.append("issuingAuthority", docAuthority);
       formData.append("fiscalYear", docFiscalYear);
-      formData.append(
-        "summary",
-        `Official ${docType.toLowerCase()} uploaded via CA Knowledge Hub: ${target.name}`,
-      );
       formData.append("isAnonymous", isAnonymous ? "true" : "false");
 
       if (!isAnonymous && (profile.fullName || profile.email)) {
@@ -519,7 +522,7 @@ export default function Contribute() {
             Math.round((event.loaded / event.total) * 100),
           );
           setUploadProgress({
-            fileName: target.name,
+            fileType: target.type,
             progressText: `${formatBytes(event.loaded)} of ${formatBytes(event.total)} (${percent}%)`,
             progress: percent,
             xhr,
@@ -585,14 +588,12 @@ export default function Contribute() {
     setUploadFeedback(null);
 
     let uploadedCount = 0;
-    let lastUploadedName = "";
 
     try {
       for (const target of queue) {
         if (uploadCancelledRef.current) break;
         await uploadSingleFile(target);
         uploadedCount += 1;
-        lastUploadedName = target.name;
       }
 
       if (!uploadCancelledRef.current && uploadedCount > 0) {
@@ -603,7 +604,7 @@ export default function Contribute() {
             message:
               uploadedCount > 1
                 ? copy.uploadDrawer.uploadedBatchSuccess(uploadedCount)
-                : copy.uploadDrawer.uploadedSuccess(lastUploadedName),
+                : copy.uploadDrawer.uploadedSuccess,
           });
         }, 300);
       }
@@ -705,11 +706,9 @@ export default function Contribute() {
           fiscalYear: qaFiscalYear,
           language: qaLanguage,
           keywords,
+          isAnonymous,
           contributor: isAnonymous
-            ? {
-                fullName: "Anonymous CA Practitioner",
-                isAnonymous: true,
-              }
+            ? undefined
             : {
                 fullName: profile.fullName || "Nepal CA Practitioner",
                 icanNumber: profile.icanNumber || undefined,
@@ -916,7 +915,7 @@ export default function Contribute() {
               />
             </motion.div>
 
-            <div>
+            <div className={styles.titleCopy}>
               <h1 className={styles.pageTitle}>{copy.titleBlock.title}</h1>
               <p className={styles.pageSubtitle}>{copy.titleBlock.subtitle}</p>
               <div className={styles.mascotStatusRow}>
@@ -925,10 +924,12 @@ export default function Contribute() {
                 </span>
                 <MascotTipTicker
                   tips={mascotTipsPool}
+                  sizingMessages={[
+                    ...copy.mascotTips,
+                    ...Object.values(copy.mascotStates),
+                  ]}
                   priorityMessage={mascotPriorityMessage}
                   paused={showSplash}
-                  lineClassName={styles.mascotLine}
-                  cursorClassName={styles.mascotCursor}
                 />
               </div>
             </div>
@@ -1485,12 +1486,12 @@ export default function Contribute() {
 
                     {(stagedFiles.length > 0 || uploadProgress) && (
                       <div className={styles.fileList}>
-                        {stagedFiles.map((item) => (
+                        {stagedFiles.map((item, index) => (
                           <div key={item.id} className={styles.fileRow}>
                             <span className={styles.fileType}>{item.type}</span>
                             <div className={styles.fileMeta}>
                               <span className={styles.fileName}>
-                                {item.name}
+                                {copy.uploadDrawer.documentLabel(index + 1)}
                               </span>
                               <span className={styles.fileSub}>
                                 {item.size} • {copy.uploadDrawer.stagedLabel} (
@@ -1502,7 +1503,7 @@ export default function Contribute() {
                               className={styles.iconBtn}
                               onClick={() => handleDeleteFile(item.id)}
                               aria-label={copy.uploadDrawer.removeFileAria(
-                                item.name,
+                                copy.uploadDrawer.documentLabel(index + 1),
                               )}
                             >
                               <Trash2 size={14} />
@@ -1526,11 +1527,11 @@ export default function Contribute() {
                               }}
                             >
                               <span className={styles.fileType}>
-                                {getFileType(uploadProgress.fileName)}
+                                {uploadProgress.fileType}
                               </span>
                               <div className={styles.fileMeta}>
                                 <span className={styles.fileName}>
-                                  {uploadProgress.fileName}
+                                  {copy.uploadDrawer.uploadDocumentLabel}
                                 </span>
                                 <span className={styles.fileSub}>
                                   {uploadProgress.progressText}

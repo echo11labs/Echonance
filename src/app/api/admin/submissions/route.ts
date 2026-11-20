@@ -31,34 +31,49 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => null);
     const type = body?.type;
-    const id = String(body?.id || "");
+    const id = typeof body?.id === "string" ? body.id.trim() : "";
+    const decision = body?.decision === undefined ? "approve" : body.decision;
 
-    if ((type !== "qa" && type !== "document") || !id) {
+    if (
+      (type !== "qa" && type !== "document") ||
+      !id ||
+      (decision !== "approve" &&
+        decision !== "decline" &&
+        decision !== "delete")
+    ) {
       return NextResponse.json(
         {
           status: "error",
-          message: "A valid type (qa or document) and id are required.",
+          message:
+            "A valid submission ID, type, and review decision are required.",
         },
         { status: 400 },
       );
     }
 
     const repo = getTaxRepository();
-    const approved = await repo.approveSubmission(type, id);
-
-    return NextResponse.json(
-      {
-        status: approved ? "success" : "not_found",
-        message: approved
-          ? `Submission ${id} approved and published to verified knowledge base.`
-          : "Submission not found.",
-      },
-      { status: approved ? 200 : 404 },
-    );
+    const result = await repo.decideSubmission(type, id, decision);
+    if (result === "not_pending") {
+      return NextResponse.json(
+        {
+          status: "not_pending",
+          message: "This submission is no longer pending.",
+        },
+        { status: 404 },
+      );
+    }
+    if (result === "file_cleanup_failed") {
+      return NextResponse.json({
+        status: "success",
+        warning:
+          "The submission was deleted, but its file could not be removed from storage.",
+      });
+    }
+    return NextResponse.json({ status: "success" });
   } catch (err: unknown) {
-    console.error("[admin/submissions] approval failed:", err);
+    console.error("[admin/submissions] decision failed:", err);
     return NextResponse.json(
-      { status: "error", message: "Unable to approve this submission." },
+      { status: "error", message: "Unable to save the review decision." },
       { status: 500 },
     );
   }

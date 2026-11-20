@@ -4,8 +4,8 @@ import "@fontsource-variable/instrument-sans";
 import {
   ArrowLeft,
   ArrowRight,
+  FileText,
   Filter,
-  Link2,
   Search,
   Shuffle,
 } from "lucide-react";
@@ -65,7 +65,7 @@ interface ResearchSourceItem {
   authority: string;
   tag: string;
   provisions: string;
-  status: string;
+  status?: string;
   sourceUrl: string;
   fileName: string;
 }
@@ -87,8 +87,7 @@ const research: readonly ResearchSection[] = [
     icon: DirectivesIcon,
     description:
       "Browse verified IRD guidance, subordinate rules, and policy source files stored in the repository.",
-    searchPlaceholder:
-      "Search verified guidance by title, subject, or issuing office…",
+    searchPlaceholder: "Search guidance…",
     categories: [
       "All Guidance",
       "Withholding Guidance",
@@ -160,7 +159,6 @@ const research: readonly ResearchSection[] = [
         tag: "FY 2083/84 Amendment",
         provisions:
           "Adds international transaction definition (Sec. 2(kha1)), Advance Pricing Agreements (Sec. 33B), VC/PE exemption (Sec. 10(tha1)), and Sec. 95Ka rules.",
-        status: "Original Official PDF",
         sourceUrl: "/api/sources/finance-bill-2083-pdf",
         fileName: "finance-bill-2083-84-original.pdf",
       },
@@ -174,7 +172,6 @@ const research: readonly ResearchSection[] = [
         tag: "FY 2083/84 Amendment",
         provisions:
           "Authorizes Gazetted concessional VAT rates (Sec. 7(1a)), updates liquor definition (Sec. 2(n1)), micro-brewery licensing, and excise suspension renewals.",
-        status: "Original Official PDF",
         sourceUrl: "/api/sources/finance-bill-2083-pdf",
         fileName: "finance-bill-2083-84-original.pdf",
       },
@@ -188,7 +185,6 @@ const research: readonly ResearchSection[] = [
         tag: "FY 2083/84 Amendment",
         provisions:
           "Establishes administrative review under Sec. 28A of Customs Duty Act, 2081, amends Customs Act, 2082, and updates Annex 4 Baggage Rules.",
-        status: "Original Official PDF",
         sourceUrl: "/api/sources/finance-bill-2083-pdf",
         fileName: "finance-bill-2083-84-original.pdf",
       },
@@ -232,7 +228,6 @@ const research: readonly ResearchSection[] = [
         tag: "Verified Relief Scheme",
         provisions:
           "Covers legacy tax write-offs (Sec. 30), post-clearance customs relief (Sec. 34), 3-tier income tax amnesty (Sec. 40), and 1% arrears settlement (Sec. 44).",
-        status: "Original Official PDF",
         sourceUrl: "/api/sources/finance-bill-2083-pdf",
         fileName: "finance-bill-2083-84-original.pdf",
       },
@@ -245,7 +240,6 @@ const research: readonly ResearchSection[] = [
         tag: "Statutory Levy Schedule",
         provisions:
           "Details 1% Foreign Employment Fee, Tourism Service Fee, Green Tax, Telecom Service Charge, Luxury Tax, and Digital Service Tax provisions.",
-        status: "Original Official PDF",
         sourceUrl: "/api/sources/finance-bill-2083-pdf",
         fileName: "finance-bill-2083-84-original.pdf",
       },
@@ -1003,7 +997,11 @@ export default function Dashboard() {
         onCloseGuestLimit={() => setGuestLimitOpen(false)}
         onDeleteAndRestart={handleDeleteAndRestart}
         onNavigate={(id) => {
-          if (id === "tax-law-library" || id === "about") {
+          if (
+            id === "tax-law-library" ||
+            id === "about" ||
+            id === "review-queue"
+          ) {
             return;
           }
           setCurrent(id);
@@ -1177,38 +1175,34 @@ export default function Dashboard() {
                   <article key={item.title} className={styles.resourceCard}>
                     <div className={styles.cardHeader}>
                       <span className={styles.cardTag}>{item.tag}</span>
-                      <span className={styles.cardStatus}>
-                        <span
-                          className={styles.cardStatusDot}
-                          aria-hidden="true"
-                        />
-                        {item.status}
-                      </span>
+                      {item.status && (
+                        <span className={styles.cardStatus}>
+                          <span
+                            className={styles.cardStatusDot}
+                            aria-hidden="true"
+                          />
+                          {item.status}
+                        </span>
+                      )}
                     </div>
                     <h2 className={styles.cardTitle}>{item.title}</h2>
                     <p className={styles.cardSubTitle}>{item.subTitle}</p>
                     <p className={styles.cardProvisions}>{item.provisions}</p>
                     <div className={styles.cardFooter}>
-                      <span>{item.authority}</span>
-                      <div
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "14px",
-                        }}
-                      >
+                      <p className={styles.cardAuthority}>{item.authority}</p>
+                      <div className={styles.cardActions}>
                         <a
                           href={item.sourceUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className={styles.cardAction}
                         >
-                          <Link2 aria-hidden="true" />
-                          <span>{item.fileName}</span>
+                          <FileText aria-hidden="true" />
+                          <span>View PDF</span>
                         </a>
                         <button
                           type="button"
-                          className={styles.cardAction}
+                          className={`${styles.cardAction} ${styles.cardAskAction}`}
                           onClick={() => {
                             setDraft(
                               `Tell me about ${item.title} and its key tax provisions.`,
@@ -1216,7 +1210,8 @@ export default function Dashboard() {
                             window.location.hash = assistant.id;
                           }}
                         >
-                          Ask Assistant <ArrowRight aria-hidden="true" />
+                          <span>Ask CA Ora</span>
+                          <ArrowRight aria-hidden="true" />
                         </button>
                       </div>
                     </div>

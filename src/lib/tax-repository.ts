@@ -74,6 +74,19 @@ export interface TaxDocument {
   createdAt: string;
 }
 
+export type ReviewSubmission<T extends TaxQAEntry | TaxDocument> = Omit<
+  T,
+  "contributor"
+> & { contributor?: Pick<TaxContributor, "fullName"> };
+
+export interface PendingReviewSubmissions {
+  qaEntries: ReviewSubmission<TaxQAEntry>[];
+  documents: ReviewSubmission<TaxDocument>[];
+}
+
+export type ReviewDecision = "approve" | "decline" | "delete";
+type ReviewDecisionResult = "updated" | "not_pending" | "file_cleanup_failed";
+
 export interface TaxKnowledgeRepository {
   searchQA(
     query: string,
@@ -92,11 +105,12 @@ export interface TaxKnowledgeRepository {
   submitDocument(
     doc: Omit<TaxDocument, "id" | "status" | "createdAt" | "downloadCount">,
   ): Promise<TaxDocument>;
-  listPendingSubmissions(): Promise<{
-    qaEntries: TaxQAEntry[];
-    documents: TaxDocument[];
-  }>;
-  approveSubmission(type: "qa" | "document", id: string): Promise<boolean>;
+  listPendingSubmissions(): Promise<PendingReviewSubmissions>;
+  decideSubmission(
+    type: "qa" | "document",
+    id: string,
+    decision: ReviewDecision,
+  ): Promise<ReviewDecisionResult>;
 }
 
 // Convert Mock data into standard TaxQAEntry records
@@ -455,34 +469,44 @@ class LocalTaxRepository implements TaxKnowledgeRepository {
     return newDoc;
   }
 
-  async listPendingSubmissions(): Promise<{
-    qaEntries: TaxQAEntry[];
-    documents: TaxDocument[];
-  }> {
+  async listPendingSubmissions(): Promise<PendingReviewSubmissions> {
+    function pending<T extends TaxQAEntry | TaxDocument>(
+      entries: T[],
+    ): ReviewSubmission<T>[] {
+      return entries
+        .filter((entry) => entry.status === "pending_review")
+        .map((entry) => ({
+          ...entry,
+          contributor:
+            !entry.isAnonymous && entry.contributor
+              ? { fullName: entry.contributor.fullName }
+              : undefined,
+        }));
+    }
+
     return {
-      qaEntries: this.qaEntries.filter((e) => e.status === "pending_review"),
-      documents: this.documents.filter((d) => d.status === "pending_review"),
+      qaEntries: pending(this.qaEntries),
+      documents: pending(this.documents),
     };
   }
 
-  async approveSubmission(
+  async decideSubmission(
     type: "qa" | "document",
     id: string,
-  ): Promise<boolean> {
-    if (type === "qa") {
-      const entry = this.qaEntries.find((e) => e.id === id);
-      if (entry) {
-        entry.status = "verified";
-        return true;
-      }
+    decision: ReviewDecision,
+  ): Promise<ReviewDecisionResult> {
+    const entries = type === "qa" ? this.qaEntries : this.documents;
+    const index = entries.findIndex(
+      (entry) => entry.id === id && entry.status === "pending_review",
+    );
+    if (index === -1) return "not_pending";
+
+    if (decision === "delete") {
+      entries.splice(index, 1);
     } else {
-      const doc = this.documents.find((d) => d.id === id);
-      if (doc) {
-        doc.status = "verified";
-        return true;
-      }
+      entries[index].status = decision === "approve" ? "verified" : "rejected";
     }
-    return false;
+    return "updated";
   }
 }
 
@@ -810,22 +834,23 @@ class SupabaseTaxRepository implements TaxKnowledgeRepository {
     };
   }
 
-  async listPendingSubmissions(): Promise<{
-    qaEntries: TaxQAEntry[];
-    documents: TaxDocument[];
-  }> {
-    const { data: qa } = await this.client
-      .from("tax_qa_entries")
-      .select("*, tax_contributors(*)")
-      .eq("status", "pending_review");
-
-    const { data: docs } = await this.client
-      .from("tax_documents")
-      .select("*, tax_contributors(*)")
-      .eq("status", "pending_review");
+  async listPendingSubmissions(): Promise<PendingReviewSubmissions> {
+    const [qa, docs] = await Promise.all([
+      this.client
+        .from("tax_qa_entries")
+        .select("*, tax_contributors(full_name)")
+        .eq("status", "pending_review"),
+      this.client
+        .from("tax_documents")
+        .select("*, tax_contributors(full_name)")
+        .eq("status", "pending_review"),
+    ]);
+    if (qa.error || docs.error) {
+      throw new Error("Unable to load pending submissions.");
+    }
 
     return {
-      qaEntries: (qa || []).map((row) => ({
+      qaEntries: (qa.data || []).map((row) => ({
         id: row.id,
         question: row.question,
         shortTopic: row.short_topic,
@@ -836,12 +861,19 @@ class SupabaseTaxRepository implements TaxKnowledgeRepository {
         answer: row.answer,
         citations: row.citations || [],
         reasoningSteps: row.reasoning_steps || [],
+        rateTable: row.rate_table,
+        contributor:
+          !row.is_anonymous && row.tax_contributors
+            ? {
+                fullName: row.tax_contributors.full_name,
+              }
+            : undefined,
         isAnonymous: row.is_anonymous,
         status: row.status,
         helpfulCount: 0,
         createdAt: row.created_at,
       })),
-      documents: (docs || []).map((row) => ({
+      documents: (docs.data || []).map((row) => ({
         id: row.id,
         title: row.title,
         documentType: row.document_type,
@@ -852,6 +884,13 @@ class SupabaseTaxRepository implements TaxKnowledgeRepository {
         fileSizeBytes: Number(row.file_size_bytes || 0),
         fileName: row.file_name,
         mimeType: row.mime_type,
+        summary: row.summary,
+        contributor:
+          !row.is_anonymous && row.tax_contributors
+            ? {
+                fullName: row.tax_contributors.full_name,
+              }
+            : undefined,
         isAnonymous: row.is_anonymous,
         status: row.status,
         downloadCount: 0,
@@ -860,26 +899,65 @@ class SupabaseTaxRepository implements TaxKnowledgeRepository {
     };
   }
 
-  async approveSubmission(
+  async decideSubmission(
     type: "qa" | "document",
     id: string,
-  ): Promise<boolean> {
+    decision: ReviewDecision,
+  ): Promise<ReviewDecisionResult> {
     const table = type === "qa" ? "tax_qa_entries" : "tax_documents";
-    const { error } = await this.client
-      .from(table)
-      .update({
-        status: "verified",
-        reviewed_at: new Date().toISOString(),
-        reviewed_by: "Taxora Editorial Admin",
-      })
-      .eq("id", id);
+    if (decision === "delete") {
+      const { data, error } = await this.client
+        .from(table)
+        .delete()
+        .eq("id", id)
+        .eq("status", "pending_review")
+        .select(type === "qa" ? "id" : "id, storage_path")
+        .maybeSingle();
+      if (error) throw new Error("Unable to delete submission.");
+      if (!data) return "not_pending";
 
-    return !error;
+      if (
+        "storage_path" in data &&
+        typeof data.storage_path === "string" &&
+        data.storage_path.startsWith("contributed/")
+      ) {
+        try {
+          const { error: storageError } = await this.client.storage
+            .from("tax-documents")
+            .remove([data.storage_path]);
+          if (storageError) return "file_cleanup_failed";
+        } catch {
+          return "file_cleanup_failed";
+        }
+      }
+
+      return "updated";
+    }
+
+    const status = decision === "approve" ? "verified" : "rejected";
+    const { data, error } = await this.client
+      .from(table)
+      .update(
+        type === "qa"
+          ? {
+              status,
+              reviewed_at: new Date().toISOString(),
+              reviewed_by: "Taxora Editorial Admin",
+            }
+          : { status },
+      )
+      .eq("id", id)
+      .eq("status", "pending_review")
+      .select("id")
+      .maybeSingle();
+
+    if (error) throw new Error("Unable to update submission.");
+    return data ? "updated" : "not_pending";
   }
 }
 
-// Global singleton repository instance
-let repoInstance: TaxKnowledgeRepository | null = null;
+// The local repository holds submissions in memory across requests.
+let localRepository: LocalTaxRepository | undefined;
 
 export function getSupabaseServerConfig(): { url: string; key: string } | null {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
@@ -901,14 +979,14 @@ export function getSupabaseServerConfig(): { url: string; key: string } | null {
 }
 
 export function getTaxRepository(): TaxKnowledgeRepository {
-  if (repoInstance) return repoInstance;
-
   const config = getSupabaseServerConfig();
   if (config) {
-    repoInstance = new SupabaseTaxRepository(config.url, config.key);
-  } else {
-    repoInstance = new LocalTaxRepository();
+    return new SupabaseTaxRepository(config.url, config.key);
   }
 
-  return repoInstance;
+  // A development hot reload can retain an instance of the previous class.
+  if (!(localRepository instanceof LocalTaxRepository)) {
+    localRepository = new LocalTaxRepository();
+  }
+  return localRepository;
 }

@@ -136,6 +136,8 @@ export interface ContributeCopy {
     dropBrowse: string;
     dropHint: string;
     stagedLabel: string;
+    documentLabel: (index: number) => string;
+    uploadDocumentLabel: string;
     removeFileAria: (name: string) => string;
     cancelUploadAria: string;
     readySummary: (count: number, authority: string) => string;
@@ -146,7 +148,7 @@ export interface ContributeCopy {
     missingFileError: string;
     cancelledNotice: string;
     savedProgressText: string;
-    uploadedSuccess: (name: string) => string;
+    uploadedSuccess: string;
     uploadedBatchSuccess: (count: number) => string;
     unsupportedFileError: (name: string) => string;
     fileTooLargeError: (name: string) => string;
@@ -202,6 +204,7 @@ export interface ContributeCopy {
     backBtn: string;
     sampleFilingsTitle: string;
     sampleNavAria: string;
+    closeSidebar: string;
     officialSourcesTitle: string;
     readerIntro: string;
     fyPrefix: string;
@@ -337,6 +340,8 @@ export const CONTRIBUTE_COPY: Record<ContributeLocale, ContributeCopy> = {
       dropBrowse: "browse",
       dropHint: "Max 25 MB per file • Stored directly in Taxora repository",
       stagedLabel: "Staged",
+      documentLabel: (index) => `Document ${index}`,
+      uploadDocumentLabel: "Document upload",
       removeFileAria: (name) => `Remove ${name}`,
       cancelUploadAria: "Cancel upload",
       readySummary: (count, authority) =>
@@ -348,13 +353,13 @@ export const CONTRIBUTE_COPY: Record<ContributeLocale, ContributeCopy> = {
       missingFileError: "Please drop or browse files to upload.",
       cancelledNotice: "Upload cancelled.",
       savedProgressText: "Saved to database • 100%",
-      uploadedSuccess: (name) => `"${name}" uploaded and saved to Taxora.`,
+      uploadedSuccess: "Document uploaded and queued for editorial review.",
       uploadedBatchSuccess: (count) =>
         `${count} documents uploaded and queued for editorial review.`,
       unsupportedFileError: (name) =>
-        `"${name}" was skipped. Only PDF, DOC, and DOCX files are supported.`,
+        `${name} was skipped. Only PDF, DOC, and DOCX files are supported.`,
       fileTooLargeError: (name) =>
-        `"${name}" was skipped. Files must be 25 MB or smaller.`,
+        `${name} was skipped. Files must be non-empty and no larger than 25 MB.`,
       uploadErrorPrefix: "Upload error",
       uploadFallbackError: "Failed to save document to database.",
       networkError: "Network transmission failed. Please retry.",
@@ -482,6 +487,7 @@ export const CONTRIBUTE_COPY: Record<ContributeLocale, ContributeCopy> = {
       backBtn: "Back to Contributor Filing",
       sampleFilingsTitle: "Sample Filings",
       sampleNavAria: "Sample Tax Scenarios",
+      closeSidebar: "Close sample sidebar",
       officialSourcesTitle: "Official Nepal Sources",
       readerIntro:
         "Reference examples showing the expected level of statutory citation, practical client context, and structured legal reasoning for CA Ora contributions.",
@@ -521,21 +527,6 @@ export const CONTRIBUTE_COPY: Record<ContributeLocale, ContributeCopy> = {
         },
       ],
       samples: [
-        {
-          id: "tds-service-fee",
-          label: "TDS on Service Fees",
-          category: "Acts",
-          fiscalYear: "2081/82",
-          language: "en",
-          topic: "TDS on Service Fees (VAT-Registered vs. Non-VAT)",
-          provision: "Section 88(1) Proviso, Income Tax Act, 2058",
-          authority: "Inland Revenue Department",
-          keywords: "tds, service fee, section 88, vat invoice, withholding",
-          question:
-            "A resident private limited company in Kathmandu hires an independent IT consultancy firm for a system audit and receives an invoice for NPR 500,000 plus 13% VAT (total NPR 565,000). What TDS rate applies at the time of payment, and how would the rate change if the service provider were not VAT-registered?",
-          answer:
-            "Under Section 88(1) of the Income Tax Act, 2058, a resident person making a service fee payment with a source in Nepal must withhold tax at source at the time of payment or credit, whichever is earlier.\n\n1. VAT-Registered Service Provider: Pursuant to the proviso to Section 88(1), where a service fee is paid to a resident person registered for VAT who issues a valid tax invoice, 1.5% TDS applies on the taxable value excluding VAT (i.e., 1.5% of NPR 500,000 = NPR 7,500).\n\n2. Non-VAT Registered Service Provider: If the service provider is not registered for VAT, the general 15% TDS rate applies on the gross service fee.\n\n3. Deposit & Filing: The withholding agent must deposit the deducted TDS into the government revenue account within 25 days after the end of the Nepali month and file the monthly e-TDS return via the IRD online system.",
-        },
         {
           id: "dst-reverse-charge",
           label: "DST & Reverse Charge VAT",
@@ -583,6 +574,21 @@ export const CONTRIBUTE_COPY: Record<ContributeLocale, ContributeCopy> = {
             "During a statutory tax audit for FY 2081/82, the auditor finds that a manufacturing company paid monthly salaries of NPR 40,000 each in cash to three factory supervisors. Can the company claim these salary expenses as deductible business expenses?",
           answer:
             "Under the Income Tax Act, 2058 (as reinforced by the Finance Act, 2081), remuneration or salary payments exceeding NPR 25,000 must be disbursed through banking channels (account-payee cheque or electronic bank transfer).\n\nBecause the NPR 40,000 monthly salaries exceed the NPR 25,000 threshold and were settled in cash, the expense is disallowed as a deduction when computing taxable business income under Section 21, regardless of whether salary TDS was deducted.",
+        },
+        {
+          id: "tds-service-fee",
+          label: "TDS on Service Fees",
+          category: "Acts",
+          fiscalYear: "2081/82",
+          language: "en",
+          topic: "TDS on Service Fees (VAT-Registered vs. Non-VAT)",
+          provision: "Section 88(1) Proviso, Income Tax Act, 2058",
+          authority: "Inland Revenue Department",
+          keywords: "tds, service fee, section 88, vat invoice, withholding",
+          question:
+            "A resident private limited company in Kathmandu hires an independent IT consultancy firm for a system audit and receives an invoice for NPR 500,000 plus 13% VAT (total NPR 565,000). What TDS rate applies at the time of payment, and how would the rate change if the service provider were not VAT-registered?",
+          answer:
+            "Under Section 88(1) of the Income Tax Act, 2058, a resident person making a service fee payment with a source in Nepal must withhold tax at source at the time of payment or credit, whichever is earlier.\n\n1. VAT-Registered Service Provider: Pursuant to the proviso to Section 88(1), where a service fee is paid to a resident person registered for VAT who issues a valid tax invoice, 1.5% TDS applies on the taxable value excluding VAT (i.e., 1.5% of NPR 500,000 = NPR 7,500).\n\n2. Non-VAT Registered Service Provider: If the service provider is not registered for VAT, the general 15% TDS rate applies on the gross service fee.\n\n3. Deposit & Filing: The withholding agent must deposit the deducted TDS into the government revenue account within 25 days after the end of the Nepali month and file the monthly e-TDS return via the IRD online system.",
         },
       ],
     },
@@ -711,6 +717,8 @@ export const CONTRIBUTE_COPY: Record<ContributeLocale, ContributeCopy> = {
       dropBrowse: "छान्नुहोस्",
       dropHint: "प्रति फाइल अधिकतम 25 MB • Taxora भण्डारमा सुरक्षित हुनेछ",
       stagedLabel: "तयार",
+      documentLabel: (index) => `कागजात ${index.toLocaleString("ne-NP")}`,
+      uploadDocumentLabel: "कागजात अपलोड",
       removeFileAria: (name) => `${name} हटाउनुहोस्`,
       cancelUploadAria: "अपलोड रद्द गर्नुहोस्",
       readySummary: (count, authority) =>
@@ -722,13 +730,13 @@ export const CONTRIBUTE_COPY: Record<ContributeLocale, ContributeCopy> = {
       missingFileError: "कृपया अपलोड गर्न फाइल राख्नुहोस् वा छान्नुहोस्।",
       cancelledNotice: "अपलोड रद्द गरियो।",
       savedProgressText: "डाटाबेसमा सुरक्षित भयो • 100%",
-      uploadedSuccess: (name) => `"${name}" सफलतापूर्वक Taxora मा सुरक्षित भयो।`,
+      uploadedSuccess: "कागजात अपलोड भयो र सम्पादकीय समीक्षाको लागि राखियो।",
       uploadedBatchSuccess: (count) =>
         `${count} कागजात अपलोड भए र सम्पादकीय समीक्षाको लागि राखिए।`,
       unsupportedFileError: (name) =>
-        `"${name}" छोडियो। केवल PDF, DOC र DOCX फाइल मात्र स्वीकार गरिन्छ।`,
+        `${name} छोडियो। केवल PDF, DOC र DOCX फाइल मात्र स्वीकार गरिन्छ।`,
       fileTooLargeError: (name) =>
-        `"${name}" छोडियो। फाइल 25 MB वा सोभन्दा सानो हुनुपर्छ।`,
+        `${name} छोडियो। फाइल खाली हुनु हुँदैन र 25 MB भन्दा ठूलो हुनु हुँदैन।`,
       uploadErrorPrefix: "अपलोड त्रुटि",
       uploadFallbackError: "कागजात डाटाबेसमा सुरक्षित गर्न सकिएन।",
       networkError: "नेटवर्क समस्या देखियो। कृपया पुनः प्रयास गर्नुहोस्।",
@@ -854,6 +862,7 @@ export const CONTRIBUTE_COPY: Record<ContributeLocale, ContributeCopy> = {
       backBtn: "योगदानकर्ता फाइलिङमा फर्कनुहोस्",
       sampleFilingsTitle: "नमूना दाखिलाहरू",
       sampleNavAria: "कर प्रश्नोत्तर नमूनाहरू",
+      closeSidebar: "नमूना सूची बन्द गर्नुहोस्",
       officialSourcesTitle: "आधिकारिक नेपाली स्रोतहरू",
       readerIntro:
         "CA Ora योगदानका लागि अपेक्षित कानुनी दफा उद्धरण, व्यावहारिक सेवाग्राही सन्दर्भ र संरचित तर्क देखाउने प्रमाणित नमूनाहरू।",
@@ -893,21 +902,6 @@ export const CONTRIBUTE_COPY: Record<ContributeLocale, ContributeCopy> = {
         },
       ],
       samples: [
-        {
-          id: "tds-service-fee",
-          label: "सेवा शुल्कमा TDS",
-          category: "Acts",
-          fiscalYear: "2081/82",
-          language: "np",
-          topic: "सेवा शुल्कमा TDS (VAT दर्ता र गैर-VAT प्रदायक)",
-          provision: "दफा ८८(१) प्रतिबन्धात्मक वाक्यांश, आयकर ऐन, २०५८",
-          authority: "आन्तरिक राजस्व विभाग",
-          keywords: "tds, service fee, section 88, vat invoice, withholding",
-          question:
-            "काठमाडौंस्थित एक निवासी प्राइभेट लिमिटेड कम्पनीले स्वतन्त्र IT परामर्श फर्मसँग प्रणाली लेखापरीक्षण (System Audit) गराई रु. ५,००,००० र १३% VAT सहित जम्मा रु. ५,६५,००० को बीजक प्राप्त गर्‍यो। भुक्तानी गर्दा कति प्रतिशत TDS कट्टा गर्नुपर्छ, र यदि सेवा प्रदायक VAT मा दर्ता नभएको भए दर कसरी फरक पर्थ्यो?",
-          answer:
-            "आयकर ऐन, २०५८ को दफा ८८(१) अनुसार नेपालमा स्रोत भएको सेवा शुल्क भुक्तानी गर्ने निवासी व्यक्तिले भुक्तानी वा खर्च लेखांकन (Credit) जुन पहिले हुन्छ, सोही समयमा अग्रिम कर (TDS) कट्टा गर्नुपर्छ।\n\n१. VAT दर्ता भएको सेवा प्रदायक: दफा ८८(१) को प्रतिबन्धात्मक वाक्यांशबमोजिम VAT मा दर्ता भई वैध कर बीजक जारी गर्ने निवासी सेवा प्रदायकलाई सेवा शुल्क भुक्तानी गर्दा VAT बाहेकको करयोग्य रकममा १.५% TDS (अर्थात् रु. ५,००,००० को १.५% = रु. ७,५००) मात्र लाग्छ।\n\n२. VAT दर्ता नभएको सेवा प्रदायक: सेवा प्रदायक VAT मा दर्ता नभएको खण्डमा कुल सेवा शुल्कमा सामान्य १५% दरले TDS कट्टा गर्नुपर्छ।\n\n३. दाखिला र विवरण: कट्टा गरिएको TDS रकम नेपाली महिना समाप्त भएको २५ दिनभित्र राजस्व खातामा दाखिला गरी IRD को अनलाइन प्रणालीमार्फत मासिक e-TDS विवरण पेश गर्नुपर्छ।",
-        },
         {
           id: "dst-reverse-charge",
           label: "DST र Reverse Charge VAT",
@@ -955,6 +949,21 @@ export const CONTRIBUTE_COPY: Record<ContributeLocale, ContributeCopy> = {
             "आ.व. २०८१/८२ को कर लेखापरीक्षणका क्रममा एक उत्पादनमूलक कम्पनीले तीन जना सुपरभाइजरलाई मासिक रु. ४०,००० दरले नगदमै तलब भुक्तानी गरेको पाइयो। के कम्पनीले उक्त तलब खर्च करयोग्य आय गणना गर्दा कट्टी दाबी गर्न पाउँछ?",
           answer:
             "आयकर ऐन, २०५८ (आर्थिक ऐन, २०८१ ले सुदृढ गरेबमोजिम) अनुसार रु. २५,००० भन्दा बढीको पारिश्रमिक वा तलब भुक्तानी अनिवार्य रूपमा बैंकिङ माध्यम (Account-payee चेक वा विद्युतीय बैंक ट्रान्सफर) बाट गर्नुपर्छ।\n\nउक्त मासिक रु. ४०,००० तलब रु. २५,००० को सीमाभन्दा बढी भई नगदमा भुक्तानी गरिएकाले पारिश्रमिक TDS कट्टा गरिएको भए तापनि दफा २१ अन्तर्गत व्यवसायको खर्च कट्टीका रूपमा अमान्य (Disallowed) हुन्छ।",
+        },
+        {
+          id: "tds-service-fee",
+          label: "सेवा शुल्कमा TDS",
+          category: "Acts",
+          fiscalYear: "2081/82",
+          language: "np",
+          topic: "सेवा शुल्कमा TDS (VAT दर्ता र गैर-VAT प्रदायक)",
+          provision: "दफा ८८(१) प्रतिबन्धात्मक वाक्यांश, आयकर ऐन, २०५८",
+          authority: "आन्तरिक राजस्व विभाग",
+          keywords: "tds, service fee, section 88, vat invoice, withholding",
+          question:
+            "काठमाडौंस्थित एक निवासी प्राइभेट लिमिटेड कम्पनीले स्वतन्त्र IT परामर्श फर्मसँग प्रणाली लेखापरीक्षण (System Audit) गराई रु. ५,००,००० र १३% VAT सहित जम्मा रु. ५,६५,००० को बीजक प्राप्त गर्‍यो। भुक्तानी गर्दा कति प्रतिशत TDS कट्टा गर्नुपर्छ, र यदि सेवा प्रदायक VAT मा दर्ता नभएको भए दर कसरी फरक पर्थ्यो?",
+          answer:
+            "आयकर ऐन, २०५८ को दफा ८८(१) अनुसार नेपालमा स्रोत भएको सेवा शुल्क भुक्तानी गर्ने निवासी व्यक्तिले भुक्तानी वा खर्च लेखांकन (Credit) जुन पहिले हुन्छ, सोही समयमा अग्रिम कर (TDS) कट्टा गर्नुपर्छ।\n\n१. VAT दर्ता भएको सेवा प्रदायक: दफा ८८(१) को प्रतिबन्धात्मक वाक्यांशबमोजिम VAT मा दर्ता भई वैध कर बीजक जारी गर्ने निवासी सेवा प्रदायकलाई सेवा शुल्क भुक्तानी गर्दा VAT बाहेकको करयोग्य रकममा १.५% TDS (अर्थात् रु. ५,००,००० को १.५% = रु. ७,५००) मात्र लाग्छ।\n\n२. VAT दर्ता नभएको सेवा प्रदायक: सेवा प्रदायक VAT मा दर्ता नभएको खण्डमा कुल सेवा शुल्कमा सामान्य १५% दरले TDS कट्टा गर्नुपर्छ।\n\n३. दाखिला र विवरण: कट्टा गरिएको TDS रकम नेपाली महिना समाप्त भएको २५ दिनभित्र राजस्व खातामा दाखिला गरी IRD को अनलाइन प्रणालीमार्फत मासिक e-TDS विवरण पेश गर्नुपर्छ।",
         },
       ],
     },

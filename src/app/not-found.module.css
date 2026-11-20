@@ -1,0 +1,188 @@
+.page {
+  --bg-canvas: #060807;
+  --bg-panel: #0d1210;
+  --text-primary: #f4f5f4;
+  --text-secondary: #9da7a3;
+  --accent: #00df81;
+  --accent-hover: #2cc295;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: minmax(auto, 1fr) auto;
+  min-height: 100dvh;
+  place-items: center;
+  gap: 1.5rem;
+  padding: max(1.5rem, env(safe-area-inset-top)) 1rem
+    max(clamp(1.5rem, 5vh, 3.5rem), env(safe-area-inset-bottom));
+  color-scheme: dark;
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  font-size: clamp(1rem, 0.95rem + 0.25vw, 1.25rem);
+  line-height: 1.5;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+.face {
+  display: block;
+  width: min(12em, 90vw);
+  height: auto;
+  color: var(--accent-hover);
+}
+
+.message {
+  align-self: end;
+  text-align: center;
+}
+
+.message h1 {
+  margin: 0;
+  font-size: clamp(1.45rem, 3vw, 1.85rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.message p {
+  max-width: 34ch;
+  margin: 0.5rem auto 0.85rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-wrap: pretty;
+}
+
+.action {
+  display: inline-grid;
+  min-height: 44px;
+  place-items: center;
+  padding-inline: 1rem;
+  border: 1px solid #0d4635;
+  border-radius: 6px;
+  background: var(--bg-panel);
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.action:hover {
+  text-decoration: underline;
+}
+
+.action:focus-visible {
+  outline: 2px solid var(--accent-hover);
+  outline-offset: 3px;
+}
+
+.eyes {
+  animation: eyes 1s 0.3s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+.nose {
+  animation: nose 1s 0.3s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+.lid {
+  animation: lid 4s 1.3s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.pupil {
+  animation: pupil 4s 1.3s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.mouthLeft {
+  animation: mouthLeft 1s 0.3s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
+
+.mouthRight {
+  animation: mouthRight 1s 0.3s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
+
+@keyframes lid {
+  from,
+  40%,
+  45%,
+  to {
+    transform: translateY(0);
+  }
+  42.5% {
+    transform: translateY(17.5px);
+  }
+}
+
+@keyframes eyes {
+  from {
+    transform: translateY(112.5px);
+  }
+  to {
+    transform: translateY(15px);
+  }
+}
+
+@keyframes pupil {
+  from,
+  37.5%,
+  40%,
+  45%,
+  87.5%,
+  to {
+    stroke-dashoffset: 0;
+    transform: translate(0, 0);
+  }
+
+  12.5%,
+  25%,
+  62.5%,
+  75% {
+    stroke-dashoffset: 0;
+    transform: translate(-35px, 0);
+  }
+
+  42.5% {
+    stroke-dashoffset: 35;
+    transform: translate(0, 17.5px);
+  }
+}
+
+@keyframes mouthLeft {
+  from,
+  50% {
+    stroke-dashoffset: -102;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes mouthRight {
+  from,
+  50% {
+    stroke-dashoffset: 102;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes nose {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(22.5px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page {
+    transition: none;
+  }
+  .eyes,
+  .nose,
+  .lid,
+  .pupil,
+  .mouthLeft,
+  .mouthRight {
+    animation: none;
+  }
+}
