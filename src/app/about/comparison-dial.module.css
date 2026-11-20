@@ -380,7 +380,10 @@
 
 @media (max-width: 640px) {
   .comparisonSection {
-    padding: 24px 16px;
+    padding: 24px 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
   }
 
   .sphereFrame {
@@ -389,6 +392,18 @@
   }
 
   .matrixCard {
-    padding: 16px 14px;
+    padding: 18px 0 0;
+    border: 0;
+    border-top: 1px solid #29332e;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .matrixToggleBtn {
+    min-height: 44px;
+    padding-inline: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
   }
 }
