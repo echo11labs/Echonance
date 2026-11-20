@@ -100,18 +100,16 @@ export default function ChatAttachments({
 
   return (
     <ul className={styles.attachmentList} aria-label="Attachments">
-      {attachments.map(({ id, file, kind }) => {
+      {attachments.map(({ id, file, kind }, index) => {
         const audio = isAudioFile(file);
         const Icon = getAttachmentIcon(kind, file.name, audio);
-        const displayName = audio ? "Voice note" : file.name;
+        const displayName = audio ? "Voice note" : `Attachment ${index + 1}`;
 
         return (
           <li className={styles.attachment} key={id}>
             <Icon aria-hidden="true" />
             <div className={styles.attachmentMeta}>
-              <span className={styles.attachmentName} title={displayName}>
-                {displayName}
-              </span>
+              <span className={styles.attachmentName}>{displayName}</span>
               <span className={styles.attachmentSize}>
                 {formatFileSize(file.size)}
               </span>

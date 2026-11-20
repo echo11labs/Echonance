@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { type MouseEvent, useEffect, useRef, useState } from "react";
 import {
   Check,
+  ClipboardCheck,
   Clock,
   Edit2,
   MessageSquare,
@@ -111,6 +112,18 @@ export const WORKSPACE_NAVIGATION: { label: string; links: NavLinkItem[] }[] = [
   },
 ];
 
+const reviewNavigation = {
+  label: "Editorial",
+  links: [
+    {
+      id: "review-queue",
+      name: "Review Queue",
+      href: "/admin/review",
+      icon: ClipboardCheck,
+    },
+  ],
+};
+
 export interface AppSidebarProps {
   current?: string;
   collapsed?: boolean;
@@ -159,10 +172,12 @@ export function AppSidebar({
   const {
     isLoaded: authLoaded,
     isSignedIn,
+    userId,
     clerkConfigured,
     openSignIn,
   } = useAuthStatus();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [reviewerUserId, setReviewerUserId] = useState<string | null>(null);
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [internalWaitlistOpen, setInternalWaitlistOpen] = useState(false);
@@ -177,6 +192,31 @@ export function AppSidebar({
   useEffect(() => {
     setHasJoinedWaitlist(Boolean(loadStoredWaitlistPass()));
   }, []);
+
+  useEffect(() => {
+    if (!isSignedIn || !userId) {
+      setReviewerUserId(null);
+      return;
+    }
+
+    const request = new AbortController();
+    fetch("/api/admin/review-access", { signal: request.signal })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((access) => {
+        if (!request.signal.aborted) {
+          setReviewerUserId(access?.canReview === true ? userId : null);
+        }
+      })
+      .catch(() => {
+        if (!request.signal.aborted) setReviewerUserId(null);
+      });
+    return () => request.abort();
+  }, [isSignedIn, userId]);
+
+  const navigation =
+    isSignedIn && userId && reviewerUserId === userId
+      ? [...WORKSPACE_NAVIGATION, reviewNavigation]
+      : WORKSPACE_NAVIGATION;
 
   const isGuestLimited = clerkConfigured && authLoaded && !isSignedIn;
   const effectiveSessionLimit = getChatSessionLimit(
@@ -565,7 +605,7 @@ export function AppSidebar({
       id={isMobile ? "mobile-sidebar-navigation" : "sidebar-navigation"}
       aria-label="Workspace"
     >
-      {WORKSPACE_NAVIGATION.map(({ label, links }) => (
+      {navigation.map(({ label, links }) => (
         <div key={label} className={styles.navGroup}>
           <p className={styles.navHeading}>{label}</p>
           {links.map((link) => {

@@ -16,6 +16,7 @@ export { isClerkConfigured };
 export interface AuthStatusValue {
   isLoaded: boolean;
   isSignedIn: boolean;
+  userId: string | null;
   clerkConfigured: boolean;
   openSignIn: () => void;
 }
@@ -23,6 +24,7 @@ export interface AuthStatusValue {
 const DEFAULT_AUTH_STATUS: AuthStatusValue = {
   isLoaded: true,
   isSignedIn: false,
+  userId: null,
   clerkConfigured: false,
   openSignIn: () => {},
 };
@@ -34,7 +36,7 @@ export function useAuthStatus(): AuthStatusValue {
 }
 
 function ClerkAuthBridge({ children }: { children: ReactNode }) {
-  const { isLoaded, isSignedIn } = useUser();
+  const { isLoaded, isSignedIn, user } = useUser();
   const clerk = useClerk();
 
   return (
@@ -42,6 +44,7 @@ function ClerkAuthBridge({ children }: { children: ReactNode }) {
       value={{
         isLoaded,
         isSignedIn: Boolean(isSignedIn),
+        userId: user?.id ?? null,
         clerkConfigured: true,
         openSignIn: () => clerk.openSignIn(),
       }}

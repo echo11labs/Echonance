@@ -2069,11 +2069,13 @@
 .searchBar svg {
   width: 16px;
   height: 16px;
+  flex-shrink: 0;
   color: var(--muted);
 }
 
 .searchBar input {
   flex: 1;
+  min-width: 0;
   border: 0;
   background: transparent;
   color: var(--white);
@@ -2132,26 +2134,21 @@
 
 .resourceGrid {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
 }
 
 .resourceCard {
   padding: 16px 18px;
+  overflow-wrap: anywhere;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--sidebar);
-  transition:
-    border-color 0.2s ease,
-    transform 0.15s ease;
-}
-
-.resourceCard:hover {
-  border-color: var(--meadow);
-  transform: translateY(-1px);
 }
 
 .cardHeader {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
@@ -2180,6 +2177,7 @@
 .cardStatusDot {
   width: 6px;
   height: 6px;
+  flex-shrink: 0;
   border-radius: 50%;
   background: var(--meadow);
 }
@@ -2211,38 +2209,70 @@
 }
 
 .cardFooter {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding-top: 10px;
-  border-top: 1px solid color-mix(in srgb, var(--line) 40%, transparent);
+  display: grid;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.cardAuthority {
+  margin: 0;
   color: var(--muted);
-  font-size: 0.74rem;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
 }
 
 .cardAction {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  border: 0;
-  background: transparent;
-  color: var(--accent);
+  justify-content: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--panel);
+  color: var(--white);
   font: inherit;
-  font-size: 0.76rem;
+  font-size: 0.8rem;
   font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
   cursor: pointer;
-  padding: 0;
-  transition: opacity 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
 }
 
-.cardAction:hover {
-  opacity: 0.8;
+.cardAskAction {
+  border-color: var(--green);
+  background: var(--basil);
+  color: var(--accent);
+}
+
+@media (hover: hover) {
+  .cardAction:hover {
+    border-color: var(--meadow);
+  }
+}
+
+.cardAction:focus-visible {
+  outline: 2px solid var(--meadow);
+  outline-offset: 2px;
 }
 
 .cardAction svg {
-  width: 13px;
-  height: 13px;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
 }
 
 .resourceFooterNote {
@@ -2269,6 +2299,10 @@
   .resource {
     width: 100%;
     padding-inline: 14px;
+  }
+
+  .cardAction {
+    flex: 1 1 7.5rem;
   }
 
   .chat {

@@ -75,8 +75,6 @@ function parseContributor(raw: FormDataEntryValue | null) {
 }
 
 export async function POST(req: NextRequest) {
-  let uploadedStoragePath: string | null = null;
-
   try {
     const formData = await req.formData().catch(() => null);
     if (!formData) {
@@ -142,35 +140,27 @@ export async function POST(req: NextRequest) {
 
     const fileName = sanitizeFileName(file.name);
     const storagePath = `contributed/${Date.now()}-${fileName}`;
-    let fileUrl = "";
-
     const supabaseConfig = getSupabaseServerConfig();
-    let supabase: ReturnType<typeof createClient> | null = null;
-
-    if (supabaseConfig) {
-      supabase = createClient(supabaseConfig.url, supabaseConfig.key);
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("tax-documents")
-        .upload(storagePath, buffer, {
-          contentType: kind.mimeType,
-          upsert: false,
-        });
-
-      if (uploadError) {
-        console.error("[resources/upload] storage upload failed:", uploadError);
-        return badRequest("Unable to store the file. Please try again.", 502);
-      }
-
-      uploadedStoragePath = uploadData.path;
-      const { data: publicUrlData } = supabase.storage
-        .from("tax-documents")
-        .getPublicUrl(uploadData.path);
-      fileUrl = publicUrlData.publicUrl;
-    } else {
-      // Local demo mode: no storage backend configured, so nothing is persisted.
-      fileUrl = `/uploads/${fileName}`;
+    if (!supabaseConfig) {
+      return badRequest(
+        "Document uploads are unavailable because storage is not configured.",
+        503,
+      );
     }
 
+    const supabase = createClient(supabaseConfig.url, supabaseConfig.key);
+    const bucket = supabase.storage.from("tax-documents");
+    const { data: uploadData, error: uploadError } = await bucket.upload(
+      storagePath,
+      buffer,
+      { contentType: kind.mimeType, upsert: false },
+    );
+    if (uploadError) {
+      console.error("[resources/upload] storage upload failed:", uploadError);
+      return badRequest("Unable to store the file. Please try again.", 502);
+    }
+
+    const { data: publicUrlData } = bucket.getPublicUrl(uploadData.path);
     const repo = getTaxRepository();
     let saved: Awaited<ReturnType<typeof repo.submitDocument>>;
     try {
@@ -179,8 +169,8 @@ export async function POST(req: NextRequest) {
         documentType,
         issuingAuthority,
         fiscalYear,
-        fileUrl,
-        storagePath,
+        fileUrl: publicUrlData.publicUrl,
+        storagePath: uploadData.path,
         fileSizeBytes: file.size,
         fileName,
         mimeType: kind.mimeType,
@@ -190,12 +180,7 @@ export async function POST(req: NextRequest) {
       });
     } catch (insertError) {
       // Do not leave an orphaned file in storage if the record was not saved.
-      if (supabase && uploadedStoragePath) {
-        await supabase.storage
-          .from("tax-documents")
-          .remove([uploadedStoragePath])
-          .catch(() => undefined);
-      }
+      await bucket.remove([uploadData.path]).catch(() => undefined);
       throw insertError;
     }
 

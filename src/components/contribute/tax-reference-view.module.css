@@ -76,6 +76,55 @@
   color: #ffffff;
 }
 
+.sidebarToggle {
+  display: none;
+}
+
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  box-sizing: border-box;
+  width: min(320px, calc(100% - 36px));
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: max(12px, env(safe-area-inset-top)) 20px
+    max(24px, env(safe-area-inset-bottom));
+  border: 0;
+  border-right: 1px solid #262c29;
+  background: #111413;
+  color: #e6e8e7;
+  overscroll-behavior: contain;
+}
+
+.sidebar::backdrop {
+  background: rgb(0 0 0 / 65%);
+}
+
+.sidebarControls {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.sidebarControls button {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid #262c29;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.sidebarIndex {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
 .workspace {
   flex: 1;
   width: 100%;
@@ -136,6 +185,10 @@
   color: #ffffff;
   font-weight: 600;
   border-left-color: #10b981;
+}
+
+.sidebarIndex .navItem {
+  min-height: 44px;
 }
 
 .sourceList {
@@ -245,18 +298,40 @@
 }
 
 @media (max-width: 840px) {
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
   .headerInner {
-    padding: 14px 20px;
+    gap: 8px;
+    padding: 8px 16px;
+  }
+
+  .sidebarToggle {
+    display: grid;
+    flex: 0 0 44px;
+    height: 44px;
+    place-items: center;
+    border: 1px solid #262c29;
+    border-radius: 8px;
+    background: #111413;
+    color: #34d399;
+    cursor: pointer;
+  }
+
+  .backBtn svg,
+  .localeToggle {
+    flex-shrink: 0;
   }
 
   .workspace {
-    grid-template-columns: 1fr;
-    gap: 32px;
+    grid-template-columns: minmax(0, 1fr);
     padding: 24px 20px 48px;
   }
 
   .rail {
-    position: static;
-    gap: 24px;
+    display: none;
   }
 }
