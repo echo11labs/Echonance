@@ -192,6 +192,26 @@ export function ComparisonDialSection({ copy }: { copy: AboutCopy }) {
                   ))}
                 </tbody>
               </table>
+              <div className={aboutStyles.comparisonList}>
+                <p className={aboutStyles.comparisonCaption}>
+                  {copy.matrixCaption}
+                </p>
+                {copy.matrixRows.map((row) => (
+                  <section key={row.dimension}>
+                    <h4>{row.dimension}</h4>
+                    <dl>
+                      <div>
+                        <dt>{copy.colOtherAi}</dt>
+                        <dd>{row.otherAi}</dd>
+                      </div>
+                      <div>
+                        <dt>{copy.colTaxora}</dt>
+                        <dd>{row.taxora}</dd>
+                      </div>
+                    </dl>
+                  </section>
+                ))}
+              </div>
               <p className={aboutStyles.comparisonNote}>
                 {copy.matrixNotePrefix}
                 <Link href="/tax-law-library">{copy.matrixNoteLink}</Link>

@@ -246,6 +246,10 @@
   overflow-x: auto;
 }
 
+.comparisonList {
+  display: none;
+}
+
 .comparisonTable {
   width: 100%;
   border-collapse: collapse;
@@ -733,19 +737,49 @@
 }
 
 @media (max-width: 640px) {
-  .comparisonTable th,
-  .comparisonTable td {
-    padding: 14px 10px;
+  .comparisonTable {
+    display: none;
+  }
+
+  .comparisonList {
+    display: block;
+  }
+
+  .comparisonList section {
+    padding-block: 15px;
+    border-top: 1px solid #29332e;
+  }
+
+  .comparisonList h4 {
+    margin: 0 0 10px;
+    color: #f4f5f4;
+    font-size: 0.95rem;
+  }
+
+  .comparisonList dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 14px;
+    margin: 0;
+  }
+
+  .comparisonList dt {
+    margin-bottom: 4px;
+    color: #9da7a3;
+    font-size: 0.76rem;
+    font-weight: 650;
+  }
+
+  .comparisonList dd {
+    margin: 0;
+    color: #d2dbd6;
+    font-size: 0.86rem;
+    line-height: 1.55;
     overflow-wrap: anywhere;
   }
 
-  .comparisonTable {
-    font-size: 0.75rem;
-    line-height: 1.6;
-  }
-
-  .comparisonTable thead th {
-    font-size: 0.75rem;
+  .comparisonList dl > :last-child dt {
+    color: #79d5a9;
   }
 
   .principlesContainer {
