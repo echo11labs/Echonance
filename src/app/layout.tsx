@@ -81,6 +81,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" style={{ WebkitTextSizeAdjust: "100%" }}>
       <head>
+        <script
+          defer
+          src="https://cloud.umami.is/script.js"
+          data-website-id="942768f4-6cd1-490c-a74b-36f156aa5d07"
+          data-domains="taxora.echo11.tech"
+          data-exclude-search="true"
+          data-exclude-hash="true"
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
